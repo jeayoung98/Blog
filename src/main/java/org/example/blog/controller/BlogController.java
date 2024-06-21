@@ -20,13 +20,14 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping("/create")
-    public String createBlogForm(HttpServletRequest request, Model model) {
+    public String createBlogForm(HttpServletRequest request,
+                                 Model model) {
         Long id = userService.getUserIdFromCookie(request);
         if (id != null) {
             User user = userService.findUserById(id);
             if (user != null) {
                 model.addAttribute("userId", id);
-                return "createBlog";
+                return "/view/createBlog";
             }
         }
         return "redirect:/api/login";
