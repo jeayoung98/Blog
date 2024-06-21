@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "Posts")
@@ -33,7 +32,7 @@ public class Post {
     private Date time = new Date();
 
     @Column(nullable = false)
-    private String status;
+    private boolean status;
 
     @Column
     private int likes;
@@ -44,5 +43,9 @@ public class Post {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<Tag> tags;
+    private List<Tag> tags;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
+
 }
