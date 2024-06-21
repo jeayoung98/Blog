@@ -49,7 +49,7 @@ public class UserService {
 
         return userRepository.save(newUser);
     }
-
+    @Transactional
     public void roleToUser(User user, UserRoleType roleType) {
         Role role = roleRepository.findByRoleType(roleType);
         Set<Role> set = new HashSet<>();
@@ -59,7 +59,7 @@ public class UserService {
             userRepository.save(user);
         }
     }
-
+    @Transactional
     public boolean loginUser(String email, String password, HttpServletResponse response) {
         User user = userRepository.findByEmail(email);
         if (user != null && user.getPassword().equals(password)) {
@@ -72,7 +72,7 @@ public class UserService {
         }
         return false;
     }
-
+    @Transactional
     public Long getUserIdFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -85,14 +85,6 @@ public class UserService {
                     }
                 }
             }
-        }
-        return null;
-    }
-
-    public Blog getBlog(String name) {
-        User user = userRepository.findByName(name);
-        if (user != null) {
-            return blogRepository.findByUser(user);
         }
         return null;
     }
