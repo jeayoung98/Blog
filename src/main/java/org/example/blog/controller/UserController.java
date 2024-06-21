@@ -22,12 +22,12 @@ public class UserController {
 
     @GetMapping
     public String showUserOptions() {
-        return "users";
+        return "/view/users";
     }
 
     @GetMapping("/register")
     public String showRegistrationForm() {
-        return "register";
+        return "/view/register";
     }
 
     @PostMapping("/register")
@@ -82,7 +82,7 @@ public class UserController {
             Blog blog = blogService.getBlogById(user.getId());
             model.addAttribute(blog);
             if (blog != null) {
-                return "blog";
+                return "/view/blog";
             } else {
                 return "redirect:/api/blogs/create";
             }
@@ -94,11 +94,11 @@ public class UserController {
 
     @GetMapping("/login")
     public String showLoginForm() {
-        return "login";
+        return "/view/login";
     }
 
     @GetMapping("/welcome")
     public String showWelcome() {
-        return "welcome";
+        return "/view/welcome";
     }
 }
