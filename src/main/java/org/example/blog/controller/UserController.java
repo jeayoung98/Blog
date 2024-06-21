@@ -80,8 +80,9 @@ public class UserController {
         if (isLogIn) {
             User user = userService.findByEmail(email);
             Blog blog = blogService.getBlogById(user.getId());
-            model.addAttribute(blog);
+
             if (blog != null) {
+                model.addAttribute(blog);
                 return "/view/blog";
             } else {
                 return "redirect:/api/blogs/create";
