@@ -1,0 +1,88 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #645fa6;
+    color: white;
+}
+
+.left-header img.logo {
+    width: 50px; /* 로고 크기 */
+}
+
+.right-header input[type="search"] {
+    padding: 8px;
+    margin-right: 10px;
+}
+
+.profile-menu button {
+    background-color: #4CAF50;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.profile-menu .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.profile-menu:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: white;
+}
+
+.profile-image {
+    width: 100px; /* 프로필 이미지 크기 */
+    margin-right: 20px;
+}
+
+.followers-info {
+    text-align: right;
+    width: 100%;
+}
+
+.series-section {
+    padding: 20px;
+    background-color: white;
+}
+
+.series {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.series-image {
+    width: 100px;
+    margin-right: 20px;
+}

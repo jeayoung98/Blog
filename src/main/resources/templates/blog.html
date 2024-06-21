@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${blog.title}">블로그 메인</title>
+    <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+<div class="blog-container">
+    <header>
+        <h1 th:text="${blog.title}">블로그 제목</h1>
+        <nav>
+            <ul>
+                <li><a href="/api/blogs">홈</a></li>
+                <li><a href="/api/blogs/posts/new">새 글 작성</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main th:if="${blog.posts.isEmpty()}">
+        <div class="empty-blog">
+            <img src="/images/hi.png" alt="포스트가 없습니다.">
+            <p>포스트가 없습니다.</p>
+        </div>
+    </main>
+    <main th:unless="${blog.posts.isEmpty()}">
+        <div th:each="post : ${blog.posts}" class="post">
+<!--            <h2 th:text="${post.title}">포스트 제목</h2>-->
+<!--            <p th:text="${post.content}">포스트 내용</p>-->
+        </div>
+    </main>
+</div>
+</body>
+</html>

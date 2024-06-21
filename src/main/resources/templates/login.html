@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="content-container">
+    <img src="/images/login.png"  class="signup-image">
+    <div class="signup-container">
+<h1>로그인</h1>
+<form action="/api/login" method="post" class="signup-form">
+    <label for="email">이메일:</label>
+    <input type="email" id="email" name="email" required><br>
+    <label for="password">비밀번호:</label>
+    <input type="password" id = "password" name="password" required><br>
+    <input type="submit" value="로그인">
+</form>
+    </div>
+</div>
+</body>
+</html>

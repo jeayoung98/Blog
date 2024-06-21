@@ -1,0 +1,46 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #645fa6; /* 배경 색상 */
+    color: white;
+    display: flex;
+    flex-direction: column; /* 컨텐츠를 수직으로 정렬 */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.content-container {
+    background-color: #ffffff; /* 배경색 */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+h1 {
+    color: #333333;
+    margin-bottom: 20px; /* h1 아래 여백 추가 */
+}
+
+ul {
+    list-style: none; /* 리스트 불릿 제거 */
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px; /* 리스트 아이템 간 간격 */
+}
+
+a {
+    color: #645fa6;
+    background-color: #f2f2f2;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-decoration: none; /* 링크 밑줄 제거 */
+    transition: background-color 0.3s;
+}
+
+a:hover {
+    background-color: #ddd; /* 호버 효과 */
+}
