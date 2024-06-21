@@ -24,8 +24,8 @@ public class FileStorageService {
     public FileStorageService() {
         try {
             Files.createDirectories(this.fileStorageLocation);
-        } catch (Exception ex) {
-            throw new RuntimeException("파일 저장 디렉토리를 생성할 수 없습니다.", ex);
+        } catch (Exception e) {
+            throw new RuntimeException("파일 저장 디렉토리를 생성할 수 없습니다.", e);
         }
     }
 
