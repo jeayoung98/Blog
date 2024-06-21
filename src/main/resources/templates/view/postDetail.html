@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Details</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${post.title}">Post Title</h1>
+    <p th:text="${post.content}">Post content</p>
+
+    <div>
+        <h3>Tags:</h3>
+        <ul>
+            <li th:each="tag : ${post.tags}" th:text="${tag}">Tag</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>Images:</h3>
+        <div th:each="image : ${post.images}">
+            <img th:src="@{${image.filePath}}" alt="Post Image" style="width: 200px; height: auto;">
+        </div>
+    </div>
+
+    <a href="/api/posts">Back to posts</a>
+</div>
+</body>
+</html>
