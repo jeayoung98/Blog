@@ -83,7 +83,7 @@ public class UserController {
 
             if (blog != null) {
                 model.addAttribute(blog);
-                return "/view/blog";
+                return "redirect:/api/blogs/"+blog.getBlogId();
             } else {
                 return "redirect:/api/blogs/create";
             }
