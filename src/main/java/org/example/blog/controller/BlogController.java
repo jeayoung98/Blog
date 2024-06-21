@@ -1,6 +1,7 @@
 package org.example.blog.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.blog.domain.Blog;
 import org.example.blog.domain.User;
 import org.example.blog.service.BlogService;
 import org.example.blog.service.UserService;
@@ -44,6 +45,18 @@ public class BlogController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/api/blogs/create";
+        }
+    }
+
+    @GetMapping("/{id}")
+    public String getBlogById(@PathVariable("id") Long id, Model model,RedirectAttributes redirectAttributes) {
+        Blog blog = blogService.getBlogById(id);
+        if (blog != null) {
+            model.addAttribute("blog", blog);
+            return "blog";
+        } else {
+            redirectAttributes.addFlashAttribute("error", "블로그를 찾지 못했습니다.");
+            return "/api/login";
         }
     }
 
