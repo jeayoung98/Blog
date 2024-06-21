@@ -20,6 +20,7 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
+
     @GetMapping("/create")
     public String createBlogForm(HttpServletRequest request,
                                  Model model) {
@@ -49,15 +50,22 @@ public class BlogController {
     }
 
     @GetMapping("/{id}")
-    public String getBlogById(@PathVariable("id") Long id, Model model,RedirectAttributes redirectAttributes) {
+    public String getBlogById(@PathVariable("id") Long id,
+                              Model model,
+                              RedirectAttributes redirectAttributes,
+                              HttpServletRequest request) {
+        Long userId = userService.getUserIdFromCookie(request);
+        if (userId == null || !userId.equals(id)) {
+            redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+            return "/view/error";
+        }
         Blog blog = blogService.getBlogById(id);
         if (blog != null) {
             model.addAttribute("blog", blog);
-            return "blog";
+            return "/view/blog";
         } else {
             redirectAttributes.addFlashAttribute("error", "블로그를 찾지 못했습니다.");
             return "/api/login";
         }
     }
-
 }
