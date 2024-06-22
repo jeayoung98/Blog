@@ -79,7 +79,7 @@ public class UserController {
         boolean isLogIn = userService.loginUser(email, password, response);
         if (isLogIn) {
             User user = userService.findByEmail(email);
-            Blog blog = blogService.getBlogById(user.getId());
+            Blog blog = blogService.getBlogByUserId(user.getId());
 
             if (blog != null) {
                 model.addAttribute(blog);
