@@ -52,20 +52,22 @@ public class BlogController {
     @GetMapping("/{id}")
     public String getBlogById(@PathVariable("id") Long id,
                               Model model,
-                              RedirectAttributes redirectAttributes,
                               HttpServletRequest request) {
         Long userId = userService.getUserIdFromCookie(request);
-        if (userId == null || !userId.equals(id)) {
-            redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+        Long blogId = blogService.getBlogByUserId(userId).getBlogId();
+        System.out.println(userId);
+        System.out.println(id);
+        if (blogId == null || !blogId.equals(id)) {
+            model.addAttribute("error", "권한이 없습니다.");
             return "/view/error";
         }
-        Blog blog = blogService.getBlogById(id);
+        Blog blog = blogService.getBlogByUserId(userId);
         if (blog != null) {
             model.addAttribute("blog", blog);
             return "/view/blog";
         } else {
-            redirectAttributes.addFlashAttribute("error", "블로그를 찾지 못했습니다.");
-            return "/api/login";
+            model.addAttribute("error", "블로그를 찾지 못했습니다.");
+            return "redirect:/api/login";
         }
     }
 }
