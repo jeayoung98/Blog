@@ -75,14 +75,11 @@ public class UserService {
     @Transactional
     public Long getUserIdFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
+
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("userId".equals(cookie.getName())) {
-                    try {
-                        return Long.parseLong(cookie.getValue());
-                    } catch (NumberFormatException e) {
-                        return null;
-                    }
+                    return Long.valueOf(cookie.getValue());
                 }
             }
         }
