@@ -1,5 +1,6 @@
 package org.example.blog.service;
 
+import org.example.blog.domain.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.Post;
 import org.example.blog.domain.Tag;
@@ -24,6 +25,7 @@ public class PostService {
 
     @Autowired
     private ImageRepository imageRepository;
+
     @Autowired
     private FileStorageService fileStorageService;
 
@@ -31,18 +33,24 @@ public class PostService {
     private TagRepository tagRepository;
 
     @Transactional
-    public void createPost(String title, String content, String tags, List<Image> imagePaths) {
+    public void createPost(Blog blog, String title, String content, String tags, List<Image> images) {
         Post post = new Post();
+        post.setBlog(blog);
         post.setTitle(title);
         post.setContent(content);
         post.setTags(parseTags(tags));
-        post.setImages(imagePaths);
+        for (Image image : images) {
+            image.setPost(post);
+        }
+        post.setImages(images);
         postRepository.save(post);
     }
+
 
     public Post getPostById(Long id) {
         return postRepository.findById(id).orElse(null);
     }
+
 
     @Transactional
     public List<Tag> parseTags(String tags) {
