@@ -1,30 +1,27 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Post Details</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title th:text="${post.title}">게시글 상세</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 <div class="container">
-    <h1 th:text="${post.title}">Post Title</h1>
-    <p th:text="${post.content}">Post content</p>
-
-    <div>
-        <h3>Tags:</h3>
-        <ul>
-            <li th:each="tag : ${post.tags}" th:text="${tag}">Tag</li>
-        </ul>
-    </div>
-
-    <div>
-        <h3>Images:</h3>
-        <div th:each="image : ${post.images}">
-            <img th:src="@{${image.filePath}}" alt="Post Image" style="width: 200px; height: auto;">
+    <h1 th:text="${post.title}">게시글 제목</h1>
+    <div class="post-content">
+        <div th:if="${post.images.size() > 0}" class="post-images">
+            <div th:each="image : ${post.images}">
+                <img th:src="@{{fileName}(fileName=${post.images[0].filePath})}" alt="이미지">
+            </div>
         </div>
+        <p th:text="${post.content}">게시글 내용</p>
     </div>
-
-    <a href="/api/posts">Back to posts</a>
+    <button onclick="goBack()">이전 화면으로 돌아가기</button>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 </div>
 </body>
 </html>
