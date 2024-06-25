@@ -24,7 +24,7 @@ public class BlogController {
     @GetMapping("/create")
     public String createBlogForm(HttpServletRequest request,
                                  Model model) {
-        Long id = userService.getUserIdFromCookie(request);
+        Long id = userService.getUserIdFromCookie(request); // 쿠키
         if (id != null) {
             User user = userService.findUserById(id);
             if (user != null) {
@@ -53,16 +53,15 @@ public class BlogController {
     public String getBlogById(@PathVariable("id") Long id,
                               Model model,
                               HttpServletRequest request) {
-        Long userId = userService.getUserIdFromCookie(request);
+        Long userId = userService.getUserIdFromCookie(request); // 쿠키
         Long blogId = blogService.getBlogByUserId(userId).getBlogId();
-        System.out.println(userId);
-        System.out.println(id);
         if (blogId == null || !blogId.equals(id)) {
             model.addAttribute("error", "권한이 없습니다.");
             return "/view/error";
         }
         Blog blog = blogService.getBlogByUserId(userId);
         if (blog != null) {
+            blogService.sortedPosts(blogId);
             model.addAttribute("blog", blog);
             return "/view/blog";
         } else {
