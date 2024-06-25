@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${blog.title}">블로그 메인</title>
+    <title>블로그</title>
     <link rel="stylesheet" href="/css/blog.css">
 </head>
 <body>
@@ -12,20 +12,26 @@
         <nav>
             <ul>
                 <li><a href="/api/blogs">홈</a></li>
-                <li><a href="/api/blogs/posts/new">새 글 작성</a></li>
+                <li><a href="/api/posts/new">새 글 작성</a></li>
             </ul>
         </nav>
     </header>
-    <main th:if="${blog.posts.isEmpty()}">
-        <div class="empty-blog">
+    <main>
+        <div th:if="${blog.posts.isEmpty()}" class="empty-blog">
             <img src="/images/hi.png" alt="포스트가 없습니다.">
             <p>포스트가 없습니다.</p>
         </div>
-    </main>
-    <main th:unless="${blog.posts.isEmpty()}">
-        <div th:each="post : ${blog.posts}" class="post">
-<!--            <h2 th:text="${post.title}">포스트 제목</h2>-->
-<!--            <p th:text="${post.content}">포스트 내용</p>-->
+        <div th:unless="${blog.posts.isEmpty()}" class="post-list">
+            <div th:each="post : ${blog.posts}" class="post-preview">
+                <a th:href="@{/api/posts/{id}(id=${post.postId})}">
+                    <div class="post-image">
+                        <img th:if="${post.images.size() > 0}" th:src="@{{fileName}(fileName=${post.images[0].filePath})}" alt="이미지 미리보기">
+                    </div>
+                    <div class="post-title">
+                        <h2 th:text="${post.title}">제목</h2>
+                    </div>
+                </a>
+            </div>
         </div>
     </main>
 </div>
