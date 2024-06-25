@@ -9,7 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface BlogRepository extends JpaRepository<Blog, Long> {
     Blog findByUser(User user);
 
-    boolean existsByUserId(Long userid);
-
     Blog findByUserId(Long userid);
 }
