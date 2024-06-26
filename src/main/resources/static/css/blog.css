@@ -1,18 +1,11 @@
-/* 블로그 페이지 기본 스타일 */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
 }
 
 .blog-container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
 }
 
 header {
@@ -20,97 +13,46 @@ header {
     margin-bottom: 20px;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2em;
-    color: #333;
-}
-
-nav ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 10px 0 0;
-}
-
-nav a {
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: #0056b3;
-}
-
-/* 빈 블로그 스타일 */
-.empty-blog {
-    text-align: center;
-    padding: 50px 0;
-}
-
-.empty-blog img {
-    width: 150px;
-    height: 150px;
-    opacity: 0.5;
-}
-
-.empty-blog p {
-    color: #999;
-    font-size: 1.2em;
-}
-
-/* 게시물 리스트 스타일 */
 .post-list {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .post-preview {
+    width: calc(33.333% - 20px);
     background-color: #f9f9f9;
+    margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
     overflow: hidden;
-    width: calc(50% - 10px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    text-align: center;
+    transition: transform 0.2s;
 }
 
 .post-preview:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.post-preview a {
-    color: inherit;
-    text-decoration: none;
-}
-
-.post-image {
-    width: 100%;
-    height: 200px;
-    overflow: hidden;
-    background-color: #eee;
+    transform: scale(1.05);
 }
 
 .post-image img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
 }
 
 .post-title {
     padding: 10px;
+    text-align: center;
+    background-color: #fff;
 }
 
-.post-title h2 {
-    margin: 0;
-    font-size: 1.2em;
-    color: #333;
+@media (max-width: 768px) {
+    .post-preview {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 480px) {
+    .post-preview {
+        width: 100%;
+    }
 }
