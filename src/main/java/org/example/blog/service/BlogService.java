@@ -4,6 +4,7 @@ import org.example.blog.domain.Blog;
 import org.example.blog.domain.Post;
 import org.example.blog.domain.User;
 import org.example.blog.repository.BlogRepository;
+import org.example.blog.repository.PostRepository;
 import org.example.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class BlogService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PostRepository postRepository;
 
     @Transactional
     public Long createBlog(String title, Long userId) {
@@ -45,6 +48,14 @@ public class BlogService {
                 .sorted((post1, post2) -> post2.getTime().compareTo(post1.getTime()))
                 .toList();
         blog.setPosts(list);
+    }
+
+    public Blog getBlogByPostId(Long postId) {
+        Post post = postRepository.findByPostId(postId);
+        if (post != null) {
+            return post.getBlog();
+        }
+        return null;
     }
 
 }
