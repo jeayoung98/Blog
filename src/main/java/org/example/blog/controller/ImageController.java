@@ -1,7 +1,6 @@
 package org.example.blog.controller;
 
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -16,8 +15,7 @@ import java.nio.file.Paths;
 
 @RestController
 public class ImageController {
-//    @Value("${file.upload-dir}")
-//    private String uploadDir;
+
     private final String uploadDir = "C://Temp/upload/";
     //이미지불러오기
     @GetMapping("/C://Temp/upload/{filename:.+}")
