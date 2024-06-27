@@ -2,14 +2,18 @@ package org.example.blog.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.blog.domain.Blog;
+import org.example.blog.domain.Post;
 import org.example.blog.domain.User;
 import org.example.blog.service.BlogService;
+import org.example.blog.service.PostService;
 import org.example.blog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/blogs")
@@ -19,6 +23,15 @@ public class BlogController {
 
     @Autowired
     private BlogService blogService;
+    @Autowired
+    private PostService postService;
+
+    @GetMapping()
+    public String showMainPage(Model model){
+        List<Post> posts = postService.getAllPosts();
+        model.addAttribute("posts", posts);
+        return "/view/mainPage";
+    }
 
 
     @GetMapping("/create")
@@ -54,8 +67,12 @@ public class BlogController {
                               Model model,
                               HttpServletRequest request) {
         Long userId = userService.getUserIdFromCookie(request); // 쿠키
-        Long blogId = blogService.getBlogByUserId(userId).getBlogId();
-        if (blogId == null || !blogId.equals(id)) {
+        Long blogId = null;
+        if (userId != null) {
+            blogId = blogService.getBlogByUserId(userId).getBlogId();
+        }
+
+        if (blogId == null || !blogId.equals(id) || userId == null) {
             model.addAttribute("error", "권한이 없습니다.");
             return "/view/error";
         }
