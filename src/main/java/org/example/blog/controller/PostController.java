@@ -1,5 +1,6 @@
 package org.example.blog.controller;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.blog.domain.Blog;
 import org.example.blog.domain.Image;
@@ -14,8 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/posts")
-public class PostController{
+public class PostController {
 
     @Autowired
     private PostService postService;
@@ -106,10 +105,21 @@ public class PostController{
         if (post == null) {
             model.addAttribute("error", "게시글을 찾을 수 없습니다.");
             return "/view/error";
-        }
-        else{
+        } else {
             model.addAttribute("post", post);
             return "/view/postDetail";
         }
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deletePost(@PathVariable("id") Long postId, Model model,@CookieValue(value="userId" , defaultValue = "") Long userId) {
+        Long blogId = blogService.getBlogByPostId(postId).getBlogId();
+        if (userId != null) {
+            if (blogService.getBlogByUserId(userId).getBlogId() == blogId) {
+                postService.deletePostById(postId);
+            }
+        }
+        model.addAttribute("blogId",blogId);
+        return "redirect:/api/blogs/" + blogId;
     }
 }
