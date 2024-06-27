@@ -25,6 +25,7 @@ public class FileStorageService {
 
         // 파일 저장
         Files.copy(file.getInputStream(), filePath);
+        System.out.println("저장완료 !!");
         return fileName;
     }
 }
