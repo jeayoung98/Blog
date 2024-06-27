@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>헤더</title>
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <h1><a href="/api/blogs" style="color: white; text-decoration: none;">Blog</a></h1>
+    </div>
+    <div class="header-right">
+        <img src="/images/hi.png" alt="프로필 사진" class="profile-pic" id="profile-pic">
+        <div class="dropdown-content" id="dropdown-content">
+            <a href="/api/posts/new">새 글 작성</a>
+            <a href="/logout">로그아웃</a>
+        </div>
+    </div>
+</header>
+
+<script>
+    document.getElementById('profile-pic').addEventListener('click', function () {
+        var dropdown = document.getElementById('dropdown-content');
+        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+            dropdown.style.display = 'block';
+        } else {
+            dropdown.style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

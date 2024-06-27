@@ -26,9 +26,6 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private BlogRepository blogRepository;
-
     @Transactional
     public User createUser(String email, String password, String name, String profileImage, boolean emailStatus) throws Exception {
         if (userRepository.findByName(name) != null) {

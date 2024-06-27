@@ -4,6 +4,7 @@ import org.example.blog.domain.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.Post;
 import org.example.blog.domain.Tag;
+import org.example.blog.repository.BlogRepository;
 import org.example.blog.repository.ImageRepository;
 import org.example.blog.repository.PostRepository;
 import org.example.blog.repository.TagRepository;
@@ -24,10 +25,7 @@ public class PostService {
     private PostRepository postRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
-
-    @Autowired
-    private FileStorageService fileStorageService;
+    private BlogRepository blogRepository;
 
     @Autowired
     private TagRepository tagRepository;
@@ -46,6 +44,13 @@ public class PostService {
         postRepository.save(post);
     }
 
+    public List<Post> getAllPosts() {
+        return postRepository.findAllByOrderByPostIdAsc();
+    }
+
+    public void deletePostById(Long id) {
+        postRepository.deleteById(id);
+    }
 
     public Post getPostById(Long id) {
         return postRepository.findById(id).orElse(null);

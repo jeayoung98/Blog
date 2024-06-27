@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #645fa6; /* 배경 색상 */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff; /* 배경색 */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-width: 800px; /* 최대 너비 설정 */
+    width: 80%; /* 전체 너비 설정 */
+    color: #333;
+}
+
+.form-container {
+    flex: 1;
+    padding: 20px;
+}
+
+.image-container {
+    flex: 1;
+    padding: 20px;
+}
+
+h1 {
+    color: #333333;
+    margin-bottom: 20px; /* h1 아래 여백 추가 */
+}
+
+label {
+    color: #333333;
+    display: block; /* 레이블을 블록 요소로 만들어 줄 바꿈 */
+    margin: 10px 0 5px; /* 마진으로 레이블과 입력 필드 사이 간격 조정 */
+}
+
+input[type="text"],
+button {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #007bff; /* 버튼 배경색 */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #007bff;
+}
+
+.image-container img {
+    max-width: 100%;
+    border-radius: 8px;
+}
