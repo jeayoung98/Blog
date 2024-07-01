@@ -79,9 +79,13 @@ public class PostController {
             List<Image> imagePaths = Arrays.stream(images)
                     .map(file -> {
                         try {
-                            String filePath = fileStorageService.storeFile(file);
                             Image image = new Image();
-                            image.setFilePath("/C://Temp/upload/" + filePath);
+                            String filePath = fileStorageService.storeFile(file);
+                            System.out.println(filePath);
+                            if (filePath == null) {
+                                image.setFilePath(null);
+                            }else image.setFilePath("/C://Temp/upload/" + filePath);
+
                             return image;
                         } catch (IOException e) {
                             throw new RuntimeException("파일 저장 중 오류 발생", e);
@@ -95,6 +99,7 @@ public class PostController {
             return "redirect:/api/blogs/" + blogService.getBlogByUserId(user.getId()).getBlogId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "게시물 생성 중 오류가 발생했습니다: " + e.getMessage());
+            System.out.println(e.getMessage());
             return "redirect:/api/posts/new";
         }
     }

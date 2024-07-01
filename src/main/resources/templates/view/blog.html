@@ -23,7 +23,8 @@
             <div th:each="post : ${blog.posts}" class="post-preview">
                 <a th:href="@{/api/posts/{id}(id=${post.postId})}">
                     <div class="post-image">
-                        <img th:if="${post.images.size() > 0}" th:src="@{{fileName}(fileName=${post.images[0].filePath})}" alt="이미지 미리보기">
+                        <img th:if="${post.images[0].filePath != null}" th:src="@{|${post.images[0].filePath}|}" alt="이미지 로딩중 ">
+                        <img th:unless="${post.images[0].filePath != null}" src="https://via.placeholder.com/300" alt="이미지 없음">
                     </div>
                     <div class="post-title">
                         <h2 th:text="${post.title}">제목</h2>
