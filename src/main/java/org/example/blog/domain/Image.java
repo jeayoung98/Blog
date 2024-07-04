@@ -3,6 +3,7 @@ package org.example.blog.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.blog.domain.post.Post;
 
 @Entity
 @Table(name = "images")
