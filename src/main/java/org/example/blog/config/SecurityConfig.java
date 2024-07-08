@@ -32,14 +32,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers("/", "/login/**", "/api/**", "/loginform/**", "/blogs/**", "/blogs/createform", "/userreg/**", "/userregform/**", "/css/**", "/js/**", "/C://Temp/upload/**", "/images/**", "/welcome", "/posts/**", "/logout").permitAll()
-                        .requestMatchers("/users").permitAll()
+                        .requestMatchers("/", "/login/**", "/api/**", "/loginform/**", "/blogs/**", "/blogs/createform", "/userreg/**", "/userregform/**", "/css/**", "/js/**", "/C://Temp/upload/**", "/images/**", "/welcome", "/posts/**", "/logout")
+                                .permitAll()
+//                        .requestMatchers("/**").permitAll()
                         // 계속 권한 추가해주기
                         .anyRequest()
+//                                .permitAll()
                         .authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
-//                .formLogin(Customizer.withDefaults())
                 .formLogin(form -> form.disable())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

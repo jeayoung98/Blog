@@ -34,7 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = getToken(request); //accessToken 얻어냄.
+        String token = getToken(request); // accessToken 얻어냄.
         if(StringUtils.hasText(token)){
             try{
                 getAuthentication(token);

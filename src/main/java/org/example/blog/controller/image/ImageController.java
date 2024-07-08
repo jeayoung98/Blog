@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 public class ImageController {
 
     private final String uploadDir = "C://Temp/upload/";
-    //이미지불러오기
+    // 이미지불러오기
     @GetMapping("/C://Temp/upload/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable("filename") String filename) {
         try {

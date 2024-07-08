@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시물 수정</title>
+    <link rel="stylesheet" href="/css/blog.css">
+    <link rel="stylesheet" href="/css/header.css">
+</head>
+<body>
+<div th:replace="~{view/header :: header}"></div>
+
+<div class="post-container">
+    <header>
+        <h1>게시물 수정</h1>
+    </header>
+    <form th:action="@{/posts/edit/{id}(id=${post.postId})}" method="post" enctype="multipart/form-data">
+        <label for="title">제목:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="content">내용:</label>
+        <textarea id="content" name="content" required></textarea>
+
+        <label for="tags">태그 (쉼표로 구분):</label>
+        <input type="text" id="tags" name="tags">
+
+        <label for="images">이미지 업로드:</label>
+        <input type="file" id="images" name="image" multiple>
+
+        <input type="submit" value="수정">
+    </form>
+</div>
+</body>
+</html>
