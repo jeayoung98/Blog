@@ -1,10 +1,12 @@
 package org.example.blog.controller.post;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.user.User;
+import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.FileStorageService;
 import org.example.blog.service.post.PostService;
@@ -36,6 +38,9 @@ public class PostController {
 
     @Autowired
     private BlogService blogService;
+
+    @Autowired
+    private JwtTokenizer jwtTokenizer;
 
     @GetMapping("/new")
     public String newPostForm(HttpServletRequest request, RedirectAttributes redirectAttributes) {
@@ -116,8 +121,21 @@ public class PostController {
     }
 
     @PostMapping("/delete/{id}")
-    public String deletePost(@PathVariable("id") Long postId, Model model,@CookieValue(value="userId" , defaultValue = "") Long userId) {
+    public String deletePost(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
         Long blogId = blogService.getBlogByPostId(postId).getBlogId();
+        Cookie[] cookies = request.getCookies();
+        String accessToken = null;
+        if(cookies != null){
+            for(Cookie cookie : cookies){
+                if("accessToken".equals(cookie.getName())){
+                    accessToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        Long userId = jwtTokenizer.getUserIdFromToken(accessToken);
+
+
         if (userId != null) {
             if (blogService.findBlogByUserId(userId).getBlogId() == blogId) {
                 postService.deletePostById(postId);
