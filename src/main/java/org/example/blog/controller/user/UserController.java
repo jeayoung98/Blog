@@ -1,5 +1,7 @@
 package org.example.blog.controller.user;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.FileStorageService;
@@ -9,6 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
@@ -76,8 +80,7 @@ public class UserController {
 
 
     @GetMapping("/loginform")
-    public String showLoginForm(Model model) {
-
+    public String showLoginForm() {
         return "/view/user/login";
     }
 
