@@ -21,7 +21,7 @@
         </div>
         <div th:unless="${blog.posts.isEmpty()}" class="post-list">
             <div th:each="post : ${blog.posts}" class="post-preview">
-                <a th:href="@{/api/posts/{id}(id=${post.postId})}">
+                <a th:href="@{/posts/{id}(id=${post.postId})}">
                     <div class="post-image">
                         <img th:if="${post.images[0].filePath != null}" th:src="@{|${post.images[0].filePath}|}" alt="이미지 로딩중 ">
                         <img th:unless="${post.images[0].filePath != null}" src="https://via.placeholder.com/300" alt="이미지 없음">
