@@ -2,6 +2,7 @@ package org.example.blog.service.user;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.user.Role;
 import org.example.blog.domain.user.User;
@@ -68,6 +69,16 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    @Transactional
+    public void killCookie(HttpServletRequest request, HttpServletResponse response) {
+        request.getSession().invalidate();
+
+        Cookie accessToken = new Cookie("accessToken", null);
+        accessToken.setPath("/");
+        accessToken.setMaxAge(0);
+        response.addCookie(accessToken);
     }
 
     @Transactional(readOnly = true)
