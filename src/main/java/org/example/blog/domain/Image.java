@@ -15,6 +15,7 @@ public class Image {
     @Column(name = "image_id")
     private Long id;
 
+
     @Column(name = "file_path")
     private String filePath;
 
