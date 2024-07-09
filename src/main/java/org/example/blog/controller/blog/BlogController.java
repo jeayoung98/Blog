@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.post.Post;
+import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.user.User;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.service.blog.BlogService;
@@ -29,7 +30,7 @@ public class BlogController {
 
     @GetMapping()
     public String showMainPage(HttpServletRequest request,Model model){
-        List<Post> posts = postService.getAllPosts();
+        List<Post> posts = postService.getAllPostByPublished(PublishedType.PUBLISHED);
         Cookie[] cookies = request.getCookies();
         String accessToken = null;
         for(Cookie cookie : cookies){
@@ -90,6 +91,7 @@ public class BlogController {
         Blog blog = blogService.findBlogByUserId(userId);
         if (blog != null) {
             blogService.sortedPosts(blogId);
+            model.addAttribute("post", postService.getAllPostByPublished(PublishedType.PUBLISHED));
             model.addAttribute("blog", blog);
             return "/view/blog/blog";
         } else {

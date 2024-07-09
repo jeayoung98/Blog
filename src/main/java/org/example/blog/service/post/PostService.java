@@ -54,6 +54,10 @@ public class PostService {
         return postRepository.findById(id).orElse(null);
     }
 
+    public List<Post> getAllPostByPublished(PublishedType publishedType){
+        return postRepository.findAllByPublished(publishedType);
+    }
+
 
     @Transactional
     public List<Tag> parseTags(String tags) {
