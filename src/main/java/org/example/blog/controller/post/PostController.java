@@ -56,6 +56,7 @@ public class PostController {
             redirectAttributes.addFlashAttribute("error", "블로그를 찾을수 없습니다.");
             return "redirect:/login";
         }
+        model.addAttribute("blog", blog);
         return "/view/post/newPost";
     }
 
@@ -121,6 +122,7 @@ public class PostController {
             return "/view/error";
         } else {
             model.addAttribute("post", post);
+            model.addAttribute("blog", blogService.findBlogByUserId(userId));
             return "/view/post/postDetail";
         }
     }

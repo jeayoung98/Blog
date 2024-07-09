@@ -52,12 +52,9 @@ public class BlogService {
         return blogRepository.getBlogByUserId(id);
     }
 
-//    public Long getBlogId(Long id) {
-//        if (findBlogByUserId(id).getBlogId() == null) {
-//            return -1L;
-//        }
-//        return findBlogByUserId(id).getBlogId();
-//    }
+    public Blog getBlogById(Long blogId) {
+        return blogRepository.findById(blogId).orElseThrow(() -> new IllegalArgumentException("블로그가 없습니다"));
+    }
 
     public void sortedPosts(Long blogId) {
         Blog blog = blogRepository.findById(blogId).orElse(null);

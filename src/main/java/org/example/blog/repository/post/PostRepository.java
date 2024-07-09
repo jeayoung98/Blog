@@ -1,5 +1,6 @@
 package org.example.blog.repository.post;
 
+import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.post.PublishedType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByPublished(PublishedType published);
 //    List<Post> findAllByPublishedAndStatus(PublishedType published, boolean status);
+
+    List<Post> findByBlogAndPublished(Blog blog, PublishedType publishedType);
 }

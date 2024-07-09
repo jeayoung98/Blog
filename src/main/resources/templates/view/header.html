@@ -15,7 +15,9 @@
         <img th:unless="${user.profileImage != null}" src="/images/hi.png" alt="이미지 없음">
 <!--        <img src="/images/hi.png" alt="프로필 사진" class="profile-pic" id="profile-pic">-->
         <div class="dropdown-content" id="dropdown-content">
+            <a th:href="@{/blogs/{id} (id=${blog.blogId})}">내 블로그</a>
             <a href="/posts/new">새 글 작성</a>
+            <a th:href="@{/blogs/draft/{id} (id=${blog.blogId})}">임시글 목록</a>
             <a href="/logout">로그아웃</a>
         </div>
     </div>

@@ -58,6 +58,10 @@ public class PostService {
         return postRepository.findAllByPublished(publishedType);
     }
 
+    public List<Post> getDraftPostsByBlog(Long blogId) {
+        return postRepository.findByBlogAndPublished(blogRepository.findById(blogId).orElseThrow(), PublishedType.DRAFT);
+    }
+
 
     @Transactional
     public List<Tag> parseTags(String tags) {

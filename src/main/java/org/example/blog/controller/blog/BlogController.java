@@ -42,6 +42,7 @@ public class BlogController {
         User user = userService.findUserById(id);
         model.addAttribute("posts", posts);
         model.addAttribute("user", user);
+        model.addAttribute("blog", blogService.findBlogByUserId(id));
         return "/view/blog/mainPage";
     }
 
@@ -53,6 +54,7 @@ public class BlogController {
             if (user != null) {
                 model.addAttribute("userId", id);
                 model.addAttribute("user", user);
+                model.addAttribute("blog", blogService.findBlogByUserId(id));
                 return "/view/blog/createBlog";
             }
         }
@@ -98,5 +100,14 @@ public class BlogController {
             model.addAttribute("error", "블로그를 찾지 못했습니다.");
             return "redirect:/login";
         }
+    }
+
+    @GetMapping("/draft/{id}")
+    public String showDraftPosts(@PathVariable("id") Long blogId, Model model,HttpServletRequest request) {
+        User user = userService.findUserById(userService.getUserIdFromCookie(request));
+        model.addAttribute("user",user);
+        model.addAttribute("blog", blogService.getBlogById(blogId));
+        model.addAttribute("posts", postService.getDraftPostsByBlog(blogId));
+        return "/view/blog/draft";
     }
 }
