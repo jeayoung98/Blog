@@ -11,7 +11,9 @@
         <h1><a href="/blogs" style="color: white; text-decoration: none;">Blog</a></h1>
     </div>
     <div class="header-right">
-        <img src="/images/hi.png" alt="프로필 사진" class="profile-pic" id="profile-pic">
+        <img th:if="${user.profileImage != null}" th:src="@{|${user.profileImage}|}" alt="이미지 로딩중 " class="profile-pic" id="profile-pic">
+        <img th:unless="${user.profileImage != null}" src="/images/hi.png" alt="이미지 없음">
+<!--        <img src="/images/hi.png" alt="프로필 사진" class="profile-pic" id="profile-pic">-->
         <div class="dropdown-content" id="dropdown-content">
             <a href="/posts/new">새 글 작성</a>
             <a href="/logout">로그아웃</a>

@@ -28,9 +28,19 @@ public class BlogController {
     private final JwtTokenizer jwtTokenizer;
 
     @GetMapping()
-    public String showMainPage(Model model){
+    public String showMainPage(HttpServletRequest request,Model model){
         List<Post> posts = postService.getAllPosts();
+        Cookie[] cookies = request.getCookies();
+        String accessToken = null;
+        for(Cookie cookie : cookies){
+            if (cookie.getName().equals("accessToken")) {
+                accessToken = cookie.getValue().toString();
+            }
+        }
+        Long id = jwtTokenizer.getUserIdFromToken(accessToken);
+        User user = userService.findUserById(id);
         model.addAttribute("posts", posts);
+        model.addAttribute("user", user);
         return "/view/blog/mainPage";
     }
 
@@ -41,6 +51,7 @@ public class BlogController {
             User user = userService.findUserById(id);
             if (user != null) {
                 model.addAttribute("userId", id);
+                model.addAttribute("user", user);
                 return "/view/blog/createBlog";
             }
         }
@@ -67,6 +78,7 @@ public class BlogController {
                               HttpServletRequest request) {
         Long userId = userService.getUserIdFromCookie(request); // 쿠키
         Long blogId = null;
+        model.addAttribute("user", userService.findUserById(userId));
         if (userId != null) {
             blogId = blogService.findBlogByUserId(userId).getBlogId();
         }

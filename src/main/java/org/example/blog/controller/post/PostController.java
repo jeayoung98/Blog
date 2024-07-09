@@ -43,8 +43,9 @@ public class PostController {
     private JwtTokenizer jwtTokenizer;
 
     @GetMapping("/new")
-    public String newPostForm(HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    public String newPostForm(HttpServletRequest request, RedirectAttributes redirectAttributes,Model model) {
         User user = userService.findUserById(userService.getUserIdFromCookie(request));
+        model.addAttribute("user", user);
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/login";
@@ -85,10 +86,9 @@ public class PostController {
                         try {
                             Image image = new Image();
                             String filePath = fileStorageService.storeFile(file);
-                            System.out.println(filePath);
                             if (filePath == null) {
                                 image.setFilePath(null);
-                            }else image.setFilePath("/C://Temp/upload/" + filePath);
+                            }else image.setFilePath("/upload/" + filePath);
 
                             return image;
                         } catch (IOException e) {
@@ -109,8 +109,10 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String getPostById(@PathVariable("id") Long postId, Model model) {
+    public String getPostById(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
         Post post = postService.getPostById(postId);
+        Long userId = userService.getUserIdFromCookie(request);
+        model.addAttribute("user", userService.findUserById(userId));
         if (post == null) {
             model.addAttribute("error", "게시글을 찾을 수 없습니다.");
             return "/view/error";

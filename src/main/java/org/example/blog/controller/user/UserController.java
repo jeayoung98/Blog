@@ -3,6 +3,7 @@ package org.example.blog.controller.user;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.blog.domain.Image;
 import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.FileStorageService;
 import org.example.blog.service.user.UserService;
@@ -13,6 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -59,15 +63,7 @@ public class UserController {
         }
 
         try {
-            // 수정해야됨 이미지 업로드부분
-//            String uploadedFileUrl = "";
-//            if (profileImage != null && !profileImage.isEmpty()) {
-//                uploadedFileUrl = "URL_TO_UPLOADED_IMAGE";
-//            }
-
-            String uploadedFileUrl = fileStorageService.storeFile(profileImage);
-
-
+            String uploadedFileUrl = "/upload/"+ fileStorageService.storeFile(profileImage);
             userService.createUser(email, password,username, name, uploadedFileUrl, emailStatus);
             return "redirect:/welcome";
         } catch (IllegalStateException e) {
