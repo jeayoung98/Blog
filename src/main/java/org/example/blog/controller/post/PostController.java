@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.post.Post;
+import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.user.User;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.service.blog.BlogService;
@@ -55,6 +56,7 @@ public class PostController {
             redirectAttributes.addFlashAttribute("error", "블로그를 찾을수 없습니다.");
             return "redirect:/login";
         }
+        model.addAttribute("blog", blog);
         return "/view/post/newPost";
     }
 
@@ -63,6 +65,7 @@ public class PostController {
                              @RequestParam("content") String content,
                              @RequestParam("tags") String tags,
                              @RequestParam("image") MultipartFile[] images,
+                             @RequestParam(value = "published", required = false) String published,
                              HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
 
@@ -95,9 +98,10 @@ public class PostController {
                             throw new RuntimeException("파일 저장 중 오류 발생", e);
                         }
                     }).collect(Collectors.toList());
+            PublishedType draft = published != null ? PublishedType.DRAFT : PublishedType.PUBLISHED;
 
             // 게시물 생성 처리
-            postService.createPost(blog, title, content, tags, imagePaths);
+            postService.createPost(blog, title, content, tags, imagePaths,draft);
 
             redirectAttributes.addFlashAttribute("success", "게시물이 성공적으로 생성되었습니다!");
             return "redirect:/blogs/" + blogService.findBlogByUserId(user.getId()).getBlogId();
@@ -118,6 +122,7 @@ public class PostController {
             return "/view/error";
         } else {
             model.addAttribute("post", post);
+            model.addAttribute("blog", blogService.findBlogByUserId(userId));
             return "/view/post/postDetail";
         }
     }

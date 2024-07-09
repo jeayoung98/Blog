@@ -3,6 +3,7 @@ package org.example.blog.service.post;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.post.Post;
+import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.post.Tag;
 import org.example.blog.repository.blog.BlogRepository;
 import org.example.blog.repository.post.PostRepository;
@@ -27,12 +28,13 @@ public class PostService {
     private TagRepository tagRepository;
 
     @Transactional
-    public void createPost(Blog blog, String title, String content, String tags, List<Image> images) {
+    public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published) {
         Post post = new Post();
         post.setBlog(blog);
         post.setTitle(title);
         post.setContent(content);
         post.setTags(parseTags(tags));
+        post.setPublished(published);
         for (Image image : images) {
             image.setPost(post);
         }
@@ -50,6 +52,14 @@ public class PostService {
 
     public Post getPostById(Long id) {
         return postRepository.findById(id).orElse(null);
+    }
+
+    public List<Post> getAllPostByPublished(PublishedType publishedType){
+        return postRepository.findAllByPublished(publishedType);
+    }
+
+    public List<Post> getDraftPostsByBlog(Long blogId) {
+        return postRepository.findByBlogAndPublished(blogRepository.findById(blogId).orElseThrow(), PublishedType.DRAFT);
     }
 
 

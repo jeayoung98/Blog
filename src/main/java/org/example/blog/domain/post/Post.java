@@ -39,6 +39,10 @@ public class Post {
     @Column
     private int likes;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PublishedType published;
+
     @ManyToMany
     @JoinTable(
             name = "PostTags",

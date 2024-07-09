@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.post.Post;
+import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.user.User;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.service.blog.BlogService;
@@ -29,7 +30,7 @@ public class BlogController {
 
     @GetMapping()
     public String showMainPage(HttpServletRequest request,Model model){
-        List<Post> posts = postService.getAllPosts();
+        List<Post> posts = postService.getAllPostByPublished(PublishedType.PUBLISHED);
         Cookie[] cookies = request.getCookies();
         String accessToken = null;
         for(Cookie cookie : cookies){
@@ -41,6 +42,7 @@ public class BlogController {
         User user = userService.findUserById(id);
         model.addAttribute("posts", posts);
         model.addAttribute("user", user);
+        model.addAttribute("blog", blogService.findBlogByUserId(id));
         return "/view/blog/mainPage";
     }
 
@@ -52,6 +54,7 @@ public class BlogController {
             if (user != null) {
                 model.addAttribute("userId", id);
                 model.addAttribute("user", user);
+                model.addAttribute("blog", blogService.findBlogByUserId(id));
                 return "/view/blog/createBlog";
             }
         }
@@ -90,11 +93,21 @@ public class BlogController {
         Blog blog = blogService.findBlogByUserId(userId);
         if (blog != null) {
             blogService.sortedPosts(blogId);
+            model.addAttribute("post", postService.getAllPostByPublished(PublishedType.PUBLISHED));
             model.addAttribute("blog", blog);
             return "/view/blog/blog";
         } else {
             model.addAttribute("error", "블로그를 찾지 못했습니다.");
             return "redirect:/login";
         }
+    }
+
+    @GetMapping("/draft/{id}")
+    public String showDraftPosts(@PathVariable("id") Long blogId, Model model,HttpServletRequest request) {
+        User user = userService.findUserById(userService.getUserIdFromCookie(request));
+        model.addAttribute("user",user);
+        model.addAttribute("blog", blogService.getBlogById(blogId));
+        model.addAttribute("posts", postService.getDraftPostsByBlog(blogId));
+        return "/view/blog/draft";
     }
 }
