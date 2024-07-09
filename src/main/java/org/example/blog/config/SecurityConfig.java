@@ -37,7 +37,6 @@ public class SecurityConfig {
 //                        .requestMatchers("/**").permitAll()
                         // 계속 권한 추가해주기
                         .anyRequest()
-//                                .permitAll()
                         .authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
