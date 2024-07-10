@@ -13,7 +13,7 @@
     <div class="header-right">
         <h1><a th:if="${user == null}" href="/loginform" style="color: white; text-decoration: none;" class="must-be-login">로그인</a></h1>
         <img th:if="${user !=null and user.profileImage != null}" th:src="@{|${user.profileImage}|}" alt="이미지 로딩중" class="profile-pic" id="profile-pic">
-        <img th:unless="${user !=null and user.profileImage != null}" src="/images/hi.png" alt="이미지 없음" class="profile-pic" id="profile-pic1">
+        <img th:if="${user !=null && user.profileImage == null}" src="/images/hi.png" alt="이미지 없음" class="profile-pic" id="profile-pic1">
         <div class="dropdown-content" id="dropdown-content">
             <a th:href="@{/blogs/{id} (id=${blog != null ? blog.blogId : 0})}">내 블로그</a>
             <a href="/posts/new">새 글 작성</a>
