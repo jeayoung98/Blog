@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>사용자 관리</title>
     <link rel="stylesheet" href="/css/users.css">
+    <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
+<div th:replace="~{view/header :: header}"></div>
+<div class="div-container">
 <div class="content-container">
     <h1>환영합니다!!</h1>
     <ul>
@@ -13,5 +16,16 @@
         <li><button onclick="location.href='/loginform'">로그인</button></li>
     </ul>
 </div>
+</div>
 </body>
+<script>
+    document.getElementById('profile-pic').addEventListener('click', function () {
+        var dropdown = document.getElementById('dropdown-content');
+        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+            dropdown.style.display = 'block';
+        } else {
+            dropdown.style.display = 'none';
+        }
+    });
+</script>
 </html>

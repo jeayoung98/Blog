@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>헤더</title>
-    <link rel="stylesheet" th:href="@{/css/header.css}">
+    <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
 <header>
@@ -11,24 +11,36 @@
         <h1><a href="/blogs" style="color: white; text-decoration: none;">Blog</a></h1>
     </div>
     <div class="header-right">
-        <img th:if="${user.profileImage != null}" th:src="@{|${user.profileImage}|}" alt="이미지 로딩중 " class="profile-pic" id="profile-pic">
-        <img th:unless="${user.profileImage != null}" src="/images/hi.png" alt="이미지 없음">
-<!--        <img src="/images/hi.png" alt="프로필 사진" class="profile-pic" id="profile-pic">-->
+        <h1><a th:if="${user == null}" href="/loginform" style="color: white; text-decoration: none;" class="must-be-login">로그인</a></h1>
+        <img th:if="${user !=null and user.profileImage != null}" th:src="@{|${user.profileImage}|}" alt="이미지 로딩중" class="profile-pic" id="profile-pic">
+        <img th:unless="${user !=null and user.profileImage != null}" src="/images/hi.png" alt="이미지 없음" class="profile-pic" id="profile-pic1">
         <div class="dropdown-content" id="dropdown-content">
-            <a th:href="@{/blogs/{id} (id=${blog.blogId})}">내 블로그</a>
+            <a th:href="@{/blogs/{id} (id=${blog != null ? blog.blogId : 0})}">내 블로그</a>
             <a href="/posts/new">새 글 작성</a>
-            <a th:href="@{/blogs/draft/{id} (id=${blog.blogId})}">임시글 목록</a>
+            <a th:href="@{/blogs/draft/{id} (id=${blog != null ? blog.blogId : 0})}">임시글 목록</a>
             <a href="/logout">로그아웃</a>
         </div>
     </div>
 </header>
 
 <script>
-    document.getElementById('profile-pic').addEventListener('click', function () {
+    // 공통 함수로 드롭다운 토글 기능 정의
+    function toggleDropdown() {
         var dropdown = document.getElementById('dropdown-content');
-        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-            dropdown.style.display = 'block';
-        } else {
+        dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
+    }
+
+    // profile-pic에 클릭 이벤트 리스너 추가
+    document.getElementById('profile-pic').addEventListener('click', toggleDropdown);
+
+    // profile-pic1에 클릭 이벤트 리스너 추가
+    document.getElementById('profile-pic1').addEventListener('click', toggleDropdown);
+
+    // 클릭 외부 감지하여 드롭다운 닫기
+    document.addEventListener('click', function(event) {
+        var isClickInside = document.querySelector('.header-right').contains(event.target);
+        if (!isClickInside) {
+            var dropdown = document.getElementById('dropdown-content');
             dropdown.style.display = 'none';
         }
     });

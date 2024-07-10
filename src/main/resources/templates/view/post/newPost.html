@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>새 글 작성</title>
     <link rel="stylesheet" href="/css/newPost.css">
+    <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
+<div th:replace="~{view/header :: header}"></div>
 <div class="container">
     <h1>새 글 작성</h1>
     <form action="/posts/create" method="post" enctype="multipart/form-data">
