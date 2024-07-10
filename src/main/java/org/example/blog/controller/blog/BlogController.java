@@ -38,11 +38,17 @@ public class BlogController {
                 accessToken = cookie.getValue().toString();
             }
         }
-        Long id = jwtTokenizer.getUserIdFromToken(accessToken);
+        Long id = 0L;
+        if (accessToken == null) {
+
+        } else {
+            id = jwtTokenizer.getUserIdFromToken(accessToken);
+        }
+
         User user = userService.findUserById(id);
         model.addAttribute("posts", posts);
         model.addAttribute("user", user);
-        model.addAttribute("blog", blogService.findBlogByUserId(id));
+
         return "/view/blog/mainPage";
     }
 
@@ -79,10 +85,11 @@ public class BlogController {
     public String getBlogById(@PathVariable("id") Long id,
                               Model model,
                               HttpServletRequest request) {
-        Long userId = userService.getUserIdFromCookie(request); // 쿠키
+        Long userId = 0L;
+        if(userService.getUserIdFromCookie(request) != null) userId = userService.getUserIdFromCookie(request); // 쿠키
         Long blogId = null;
         model.addAttribute("user", userService.findUserById(userId));
-        if (userId != null) {
+        if (userId != 0L) {
             blogId = blogService.findBlogByUserId(userId).getBlogId();
         }
 
@@ -103,11 +110,16 @@ public class BlogController {
     }
 
     @GetMapping("/draft/{id}")
-    public String showDraftPosts(@PathVariable("id") Long blogId, Model model,HttpServletRequest request) {
-        User user = userService.findUserById(userService.getUserIdFromCookie(request));
-        model.addAttribute("user",user);
-        model.addAttribute("blog", blogService.getBlogById(blogId));
-        model.addAttribute("posts", postService.getDraftPostsByBlog(blogId));
+    public String showDraftPosts(@PathVariable("id") Long blogId, Model model,HttpServletRequest request,RedirectAttributes redirectAttributes) {
+        try {
+            User user = userService.findUserById(userService.getUserIdFromCookie(request));
+            model.addAttribute("user", user);
+            model.addAttribute("blog", blogService.getBlogById(blogId));
+            model.addAttribute("posts", postService.getDraftPostsByBlog(blogId));
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
         return "/view/blog/draft";
     }
 }

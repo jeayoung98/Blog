@@ -83,6 +83,9 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User findUserById(Long id) {
+        if (id == null) {
+            id = 0L;
+        }
         return userRepository.findById(id).orElse(null);
     }
 

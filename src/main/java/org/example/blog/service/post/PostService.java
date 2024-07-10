@@ -28,13 +28,14 @@ public class PostService {
     private TagRepository tagRepository;
 
     @Transactional
-    public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published) {
+    public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published,int view) {
         Post post = new Post();
         post.setBlog(blog);
         post.setTitle(title);
         post.setContent(content);
         post.setTags(parseTags(tags));
         post.setPublished(published);
+        post.setView(view);
         for (Image image : images) {
             image.setPost(post);
         }
@@ -74,6 +75,10 @@ public class PostService {
                             return tagRepository.save(newTag);
                         }))
                 .collect(Collectors.toList());
+    }
+
+    public void savePost(Post post) {
+        postRepository.save(post);
     }
 
 }

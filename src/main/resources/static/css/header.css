@@ -5,6 +5,10 @@ header {
     background-color: #645fa6;
     padding: 10px 20px;
     color: white;
+    margin-bottom: 10px;
+}
+.must-be-login {
+    font-size: 20px;
 }
 
 .header-left h1 {
@@ -12,12 +16,13 @@ header {
 }
 
 .header-left h1 a {
-    color: white; /* Link color same as text */
-    text-decoration: none; /* Remove underline from link */
+    color: white;
+    text-decoration: none;
 }
 
 .header-right {
-    position: relative;
+    display: flex;
+    align-items: center; /* Center items vertically */
 }
 
 .profile-pic {
@@ -25,10 +30,13 @@ header {
     width: 40px;
     border-radius: 50%;
     cursor: pointer;
+
+    margin-left: 10px; /* Add some space between the login link and the profile picture */
 }
 
 .dropdown-content {
     display: none;
+    margin-top: 230px;
     position: absolute;
     right: 0;
     background-color: white;

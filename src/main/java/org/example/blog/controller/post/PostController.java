@@ -45,7 +45,10 @@ public class PostController {
 
     @GetMapping("/new")
     public String newPostForm(HttpServletRequest request, RedirectAttributes redirectAttributes,Model model) {
-        User user = userService.findUserById(userService.getUserIdFromCookie(request));
+        User user = null;
+        if (userService.getUserIdFromCookie(request) != null) {
+            user = userService.findUserById(userService.getUserIdFromCookie(request));
+        }
         model.addAttribute("user", user);
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
@@ -101,7 +104,7 @@ public class PostController {
             PublishedType draft = published != null ? PublishedType.DRAFT : PublishedType.PUBLISHED;
 
             // 게시물 생성 처리
-            postService.createPost(blog, title, content, tags, imagePaths,draft);
+            postService.createPost(blog, title, content, tags, imagePaths,draft,0);
 
             redirectAttributes.addFlashAttribute("success", "게시물이 성공적으로 생성되었습니다!");
             return "redirect:/blogs/" + blogService.findBlogByUserId(user.getId()).getBlogId();
@@ -116,11 +119,14 @@ public class PostController {
     public String getPostById(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
         Post post = postService.getPostById(postId);
         Long userId = userService.getUserIdFromCookie(request);
+        if(userId == null) userId = 0L;
         model.addAttribute("user", userService.findUserById(userId));
         if (post == null) {
             model.addAttribute("error", "게시글을 찾을 수 없습니다.");
             return "/view/error";
         } else {
+            post.setView(post.getView()+1);
+            postService.savePost(post);
             model.addAttribute("post", post);
             model.addAttribute("blog", blogService.findBlogByUserId(userId));
             return "/view/post/postDetail";

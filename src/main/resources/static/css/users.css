@@ -1,4 +1,4 @@
-body {
+.body-container {
     font-family: Arial, sans-serif;
     background-color: #645fa6; /* 배경 색상 */
     color: white;
@@ -47,4 +47,8 @@ button {
 
 button:hover {
     background-color: #ddd; /* 호버 효과 */
+}
+
+body {
+    margin: 0;
 }

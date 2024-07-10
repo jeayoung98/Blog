@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <title>사용자 관리</title>
     <link rel="stylesheet" href="/css/users.css">
+    <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
+<div th:replace="~{view/header :: header}"></div>
+<div class="div-container">
+<div class="body-container">
 <div class="content-container">
     <h1>환영합니다!!</h1>
     <ul>
@@ -13,5 +17,29 @@
         <li><button onclick="location.href='/loginform'">로그인</button></li>
     </ul>
 </div>
+</div>
+</div>
 </body>
+
+<script>
+    function toggleDropdown() {
+        var dropdown = document.getElementById('dropdown-content');
+        dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
+    }
+
+    // profile-pic에 클릭 이벤트 리스너 추가
+    document.getElementById('profile-pic').addEventListener('click', toggleDropdown);
+
+    // profile-pic1에 클릭 이벤트 리스너 추가
+    document.getElementById('profile-pic1').addEventListener('click', toggleDropdown);
+
+    // 클릭 외부 감지하여 드롭다운 닫기
+    document.addEventListener('click', function(event) {
+        var isClickInside = document.querySelector('.header-right').contains(event.target);
+        if (!isClickInside) {
+            var dropdown = document.getElementById('dropdown-content');
+            dropdown.style.display = 'none';
+        }
+    });
+</script>
 </html>

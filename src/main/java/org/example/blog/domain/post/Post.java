@@ -43,6 +43,9 @@ public class Post {
     @Column(nullable = false)
     private PublishedType published;
 
+    @Column(nullable = false)
+    private int view;
+
     @ManyToMany
     @JoinTable(
             name = "PostTags",

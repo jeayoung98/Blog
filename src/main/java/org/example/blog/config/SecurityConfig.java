@@ -32,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(authorizeRequest -> authorizeRequest
-                        .requestMatchers("/", "/login/**", "/api/**", "/loginform/**", "/blogs/**", "/blogs/createform", "/userreg/**", "/userregform/**", "/css/**", "/js/**", "/C://Temp/upload/**", "/images/**", "/welcome", "/posts/**", "/logout")
+                        .requestMatchers("/", "/login/**", "/api/**", "/loginform/**", "/blogs/**", "/blogs/createform", "/userreg/**", "/userregform/**", "/css/**", "/js/**", "/upload/**", "/images/**", "/welcome", "/posts/**", "/logout","/error")
                                 .permitAll()
 //                        .requestMatchers("/**").permitAll()
                         // 계속 권한 추가해주기
