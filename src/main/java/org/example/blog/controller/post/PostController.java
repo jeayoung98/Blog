@@ -2,6 +2,7 @@ package org.example.blog.controller.post;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.post.Post;
@@ -10,9 +11,9 @@ import org.example.blog.domain.user.User;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.FileStorageService;
+import org.example.blog.service.post.LikeService;
 import org.example.blog.service.post.PostService;
 import org.example.blog.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,22 +27,20 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/posts")
+@RequiredArgsConstructor
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
-    @Autowired
-    private FileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private BlogService blogService;
+    private final BlogService blogService;
 
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
+    private final JwtTokenizer jwtTokenizer;
+
+    private final LikeService likeService;
 
     @GetMapping("/new")
     public String newPostForm(HttpServletRequest request, RedirectAttributes redirectAttributes,Model model) {
@@ -116,13 +115,17 @@ public class PostController {
     public String getPostById(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
         Post post = postService.getPostById(postId);
         Long userId = userService.getUserIdFromCookie(request);
+        model.addAttribute("userId", userId);
         model.addAttribute("user", userService.findUserById(userId));
+        boolean likedByCurrentUser = likeService.isLikedByCurrentUser(post,userService.findUserById(userId));
+        System.out.println(likedByCurrentUser);
         if (post == null) {
             model.addAttribute("error", "게시글을 찾을 수 없습니다.");
             return "/view/error";
         } else {
             model.addAttribute("post", post);
             model.addAttribute("blog", blogService.findBlogByUserId(userId));
+            model.addAttribute("likedByCurrentUser", likedByCurrentUser);
             if (blogService.getBlogByPostId(postId).getUser().getId() != userId) {
                 post.setView(post.getView() + 1);
                 postService.savePost(post);

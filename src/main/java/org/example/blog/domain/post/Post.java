@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.blog.Blog;
+import org.example.blog.domain.user.User;
 
 import java.util.*;
 
@@ -36,8 +37,11 @@ public class Post {
     @Column(nullable = false)
     private boolean status;
 
-    @Column
-    private int likes;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Like> likes = new HashSet<>();
+
+    @Column(nullable = false)
+    private int view;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

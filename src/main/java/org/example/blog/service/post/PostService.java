@@ -41,6 +41,7 @@ public class PostService {
         post.setImages(images);
         postRepository.save(post);
     }
+    @Transactional
     public void savePost(Post post) {
         postRepository.save(post);
     }
@@ -49,6 +50,7 @@ public class PostService {
         return postRepository.findAllByOrderByPostIdAsc();
     }
 
+    @Transactional
     public void deletePostById(Long id) {
         postRepository.deleteById(id);
     }
