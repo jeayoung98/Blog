@@ -44,11 +44,23 @@
 </div>
 </body>
 <script>
-    document.getElementById('profile-pic').addEventListener('click', function () {
+    // 공통 함수로 드롭다운 토글 기능 정의
+    function toggleDropdown() {
         var dropdown = document.getElementById('dropdown-content');
-        if (dropdown.style.display === 'none' || dropdown.style.display === '') {
-            dropdown.style.display = 'block';
-        } else {
+        dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
+    }
+
+    // profile-pic에 클릭 이벤트 리스너 추가
+    var profilePics = document.querySelectorAll('.profile-pic');
+    profilePics.forEach(function(pic) {
+        pic.addEventListener('click', toggleDropdown);
+    });
+
+    // 클릭 외부 감지하여 드롭다운 닫기
+    document.addEventListener('click', function(event) {
+        var isClickInside = document.querySelector('.header-right').contains(event.target);
+        if (!isClickInside) {
+            var dropdown = document.getElementById('dropdown-content');
             dropdown.style.display = 'none';
         }
     });
