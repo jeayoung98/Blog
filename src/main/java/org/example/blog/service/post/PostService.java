@@ -1,10 +1,13 @@
 package org.example.blog.service.post;
 
+import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
+import org.example.blog.domain.post.Like;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.post.Tag;
+import org.example.blog.domain.user.User;
 import org.example.blog.repository.blog.BlogRepository;
 import org.example.blog.repository.post.PostRepository;
 import org.example.blog.repository.post.TagRepository;
@@ -16,16 +19,15 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
 
-    @Autowired
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
+    private final BlogRepository blogRepository;
+    private final TagRepository tagRepository;
+    private final LikeService likeService;
 
-    @Autowired
-    private BlogRepository blogRepository;
 
-    @Autowired
-    private TagRepository tagRepository;
 
     @Transactional
     public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published) {
@@ -79,6 +81,16 @@ public class PostService {
                             return tagRepository.save(newTag);
                         }))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<Post> getLikesPostId(User user) {
+        List<Like> likes = likeService.findLikesByUser(user);
+        List<Post> posts = new ArrayList<>();
+        for (Like like : likes) {
+            posts.add(getPostById(like.getPost().getPostId()));
+        }
+        return posts;
     }
 
 }

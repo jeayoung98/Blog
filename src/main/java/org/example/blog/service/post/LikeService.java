@@ -3,6 +3,7 @@ package org.example.blog.service.post;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.post.Like;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.user.User;
@@ -13,6 +14,8 @@ import org.example.blog.repository.user.UserRepository;
 import org.example.blog.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +59,14 @@ public class LikeService {
         Post post = postRepository.findByPostId(postId);
         User user = userRepository.findById(userService.getUserIdFromCookie(request)).orElse(null);
         likeRepository.deleteByPostAndUser(post,user);
+    }
+
+    public List<Like> findLikesByUser(User user) {
+        return likeRepository.findLikesByUser(user);
+    }
+
+    public List<Like> findLikesByPost(Post post) {
+        return likeRepository.findLikesByPost(post);
     }
 
 

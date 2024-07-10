@@ -12,7 +12,7 @@ public class PostRestController {
     private final LikeService likeService;
 
     @PostMapping("/like/{postId}")
-    public void likePost(@PathVariable(name = "postId") Long postId, @RequestParam(name = "like", required = false, defaultValue = "false") boolean like, HttpServletRequest request) {
+    public void likePost(@PathVariable("postId") Long postId, @RequestParam(name = "like", required = false, defaultValue = "false") boolean like, HttpServletRequest request) {
         if (like) {
             likeService.addLike(postId,request);
         } else {

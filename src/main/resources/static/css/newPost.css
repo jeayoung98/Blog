@@ -1,4 +1,4 @@
-body {
+.div-container {
     font-family: Arial, sans-serif;
     background-color: #645fa6; /* 배경 색상 */
     color: white;
@@ -27,10 +27,10 @@ body {
     margin-top: 30px; /* 상단 여백 추가 */
 }
 
-h1 {
+.h_1 {
     margin: 0;
     position: absolute; /* 절대 위치 */
-    top: -20px; /* 박스 위로 위치 */
+    top: 5px; /* 박스 위로 위치 */
     left: 50%; /* 수평 가운데 정렬 */
     transform: translateX(-50%); /* 수평으로 중앙 맞춤 */
     font-size: 2em; /* 폰트 크기 조정 */
@@ -51,6 +51,7 @@ form {
 
 label {
     margin-top: 10px;
+    left: 0%;
     color: #333;
 }
 
