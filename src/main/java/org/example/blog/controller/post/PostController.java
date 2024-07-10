@@ -123,6 +123,10 @@ public class PostController {
         } else {
             model.addAttribute("post", post);
             model.addAttribute("blog", blogService.findBlogByUserId(userId));
+            if (blogService.getBlogByPostId(postId).getUser().getId() != userId) {
+                post.setView(post.getView() + 1);
+                postService.savePost(post);
+            }
             return "/view/post/postDetail";
         }
     }

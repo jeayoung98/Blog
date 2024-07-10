@@ -19,6 +19,7 @@
         </div>
         <p th:text="${post.content}">게시글 내용</p>
     </div>
+    <h1 th:text="${post.view}">조회수</h1>
     <button onclick="goBack()">이전 화면으로 돌아가기</button>
     <form th:action="@{/posts/delete/{id}(id=${post.postId})}" method="post" style="display:inline;">
         <button type="submit" onclick="return confirm('정말로 이 게시물을 삭제하시겠습니까?')">게시물 삭제</button>
