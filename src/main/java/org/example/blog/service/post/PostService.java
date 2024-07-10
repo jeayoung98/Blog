@@ -84,7 +84,7 @@ public class PostService {
     }
 
     @Transactional
-    public List<Post> getLikesPostId(User user) {
+    public List<Post> getLikesPosts(User user) {
         List<Like> likes = likeService.findLikesByUser(user);
         List<Post> posts = new ArrayList<>();
         for (Like like : likes) {
