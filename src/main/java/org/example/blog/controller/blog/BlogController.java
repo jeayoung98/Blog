@@ -31,14 +31,7 @@ public class BlogController {
     @GetMapping()
     public String showMainPage(HttpServletRequest request,Model model){
         List<Post> posts = postService.getAllPostByPublished(PublishedType.PUBLISHED);
-        Cookie[] cookies = request.getCookies();
-        String accessToken = null;
-        for(Cookie cookie : cookies){
-            if (cookie.getName().equals("accessToken")) {
-                accessToken = cookie.getValue().toString();
-            }
-        }
-        Long id = jwtTokenizer.getUserIdFromToken(accessToken);
+        Long id = userService.getUserIdFromCookie(request);
         User user = userService.findUserById(id);
         model.addAttribute("posts", posts);
         model.addAttribute("user", user);

@@ -63,6 +63,7 @@ public class JwtTokenizer {
 
     public Long getUserIdFromToken(String token){
         Claims claims = parseToken(token,accessSecret);
+        if(claims.get("userId") == null) return 0L;
         return Long.valueOf((Integer)claims.get("userId"));
     }
 

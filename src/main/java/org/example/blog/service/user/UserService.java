@@ -68,7 +68,7 @@ public class UserService {
                 }
             }
         }
-        return null;
+        return 0L;
     }
 
     @Transactional
