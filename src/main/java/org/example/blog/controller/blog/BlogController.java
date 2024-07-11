@@ -71,12 +71,18 @@ public class BlogController {
     @GetMapping("/{id}")
     public String getBlogById(@PathVariable("id") Long id,
                               Model model,
-                              HttpServletRequest request) {
+                              HttpServletRequest request,
+                              RedirectAttributes redirectAttributes) {
         Long userId = userService.getUserIdFromCookie(request); // 쿠키
         Long blogId = null;
         model.addAttribute("user", userService.findUserById(userId));
         if (userId != null) {
-            blogId = blogService.findBlogByUserId(userId).getBlogId();
+            try {
+                blogId = blogService.findBlogByUserId(userId).getBlogId();
+
+            } catch (NullPointerException e) {
+                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
+            }
         }
 
         if (blogId == null || !blogId.equals(id) || userId == null) {

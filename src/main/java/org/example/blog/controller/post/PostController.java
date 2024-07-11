@@ -2,17 +2,20 @@ package org.example.blog.controller.post;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.post.PublishedType;
+import org.example.blog.domain.user.History;
 import org.example.blog.domain.user.User;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.FileStorageService;
+import org.example.blog.service.post.LikeService;
 import org.example.blog.service.post.PostService;
+import org.example.blog.service.user.HistoryService;
 import org.example.blog.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,28 +23,30 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/posts")
+@RequiredArgsConstructor
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
 
-    @Autowired
-    private FileStorageService fileStorageService;
+    private final FileStorageService fileStorageService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private BlogService blogService;
+    private final BlogService blogService;
 
-    @Autowired
-    private JwtTokenizer jwtTokenizer;
+    private final JwtTokenizer jwtTokenizer;
+
+    private final LikeService likeService;
+
+    private final HistoryService historyService;
 
     @GetMapping("/new")
     public String newPostForm(HttpServletRequest request, RedirectAttributes redirectAttributes,Model model) {
@@ -116,16 +121,27 @@ public class PostController {
     public String getPostById(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
         Post post = postService.getPostById(postId);
         Long userId = userService.getUserIdFromCookie(request);
-        model.addAttribute("user", userService.findUserById(userId));
+        User user = userService.findUserById(userId);
+        History history = new History();
+        model.addAttribute("userId", userId);
+        model.addAttribute("user", user);
+        boolean likedByCurrentUser = likeService.isLikedByCurrentUser(post,userService.findUserById(userId));
         if (post == null) {
             model.addAttribute("error", "게시글을 찾을 수 없습니다.");
             return "/view/error";
         } else {
+            history.setPost(post);
+            history.setUser(user);
+            historyService.saveHistory(history,userId,postId);
             model.addAttribute("post", post);
             model.addAttribute("blog", blogService.findBlogByUserId(userId));
+            model.addAttribute("likedByCurrentUser", likedByCurrentUser);
             if (blogService.getBlogByPostId(postId).getUser().getId() != userId) {
-                post.setView(post.getView() + 1);
-                postService.savePost(post);
+                History currentHistory = historyService.getHistoryByUserId(userId);
+                if (currentHistory.getPost().getPostId() != postId && !Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
+                    post.setView(post.getView() + 1);
+                    postService.savePost(post);
+                }
             }
             return "/view/post/postDetail";
         }

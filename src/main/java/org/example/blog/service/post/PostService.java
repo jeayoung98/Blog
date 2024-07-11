@@ -1,13 +1,18 @@
 package org.example.blog.service.post;
 
+import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
+import org.example.blog.domain.post.Like;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.post.Tag;
+import org.example.blog.domain.user.History;
+import org.example.blog.domain.user.User;
 import org.example.blog.repository.blog.BlogRepository;
 import org.example.blog.repository.post.PostRepository;
 import org.example.blog.repository.post.TagRepository;
+import org.example.blog.repository.user.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,16 +21,14 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
 
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private BlogRepository blogRepository;
-
-    @Autowired
-    private TagRepository tagRepository;
+    private final PostRepository postRepository;
+    private final BlogRepository blogRepository;
+    private final TagRepository tagRepository;
+    private final LikeService likeService;
+    private final HistoryRepository historyRepository;
 
     @Transactional
     public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published) {
@@ -41,6 +44,7 @@ public class PostService {
         post.setImages(images);
         postRepository.save(post);
     }
+    @Transactional
     public void savePost(Post post) {
         postRepository.save(post);
     }
@@ -49,6 +53,7 @@ public class PostService {
         return postRepository.findAllByOrderByPostIdAsc();
     }
 
+    @Transactional
     public void deletePostById(Long id) {
         postRepository.deleteById(id);
     }
@@ -78,5 +83,22 @@ public class PostService {
                         }))
                 .collect(Collectors.toList());
     }
+
+    public List<Post> getLikesPosts(User user) {
+        List<Like> likes = likeService.findLikesByUser(user);
+        List<Post> posts = new ArrayList<>();
+        for (Like like : likes) {
+            posts.add(getPostById(like.getPost().getPostId()));
+        }
+        return posts;
+    }
+
+//    public List<Post> getUserSeenPosts(User user) {
+//        List<History> histories = historyRepository.findHistoriesByUser(user);
+//        List<Post> posts = new ArrayList<>();
+//        for (History history : histories) {
+//            posts.add(history.getHistory())
+//        }
+//    }
 
 }
