@@ -8,8 +8,9 @@
 </head>
 <body>
 <div th:replace="~{view/header :: header}"></div>
+<div class="div-container">
 <div class="container">
-    <h1>새 글 작성</h1>
+    <h1 class="h_1">새 글 작성</h1>
     <form action="/posts/create" method="post" enctype="multipart/form-data">
         <label for="title">제목:</label>
         <input type="text" id="title" name="title" required>
@@ -32,21 +33,21 @@
         <input type="submit" value="게시물 작성">
     </form>
 </div>
+</div>
 </body>
 <script>
-    // 공통 함수로 드롭다운 토글 기능 정의
+
     function toggleDropdown() {
         var dropdown = document.getElementById('dropdown-content');
         dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
     }
 
-    // profile-pic에 클릭 이벤트 리스너 추가
     var profilePics = document.querySelectorAll('.profile-pic');
     profilePics.forEach(function(pic) {
         pic.addEventListener('click', toggleDropdown);
     });
 
-    // 클릭 외부 감지하여 드롭다운 닫기
+
     document.addEventListener('click', function(event) {
         var isClickInside = document.querySelector('.header-right').contains(event.target);
         if (!isClickInside) {

@@ -1,0 +1,13 @@
+.like-checkbox {
+    display: none;
+}
+
+.like-label {
+    font-size: 2em;
+    color: #ddd;
+    cursor: pointer;
+}
+
+.like-checkbox:checked + .like-label {
+    color: red;
+}

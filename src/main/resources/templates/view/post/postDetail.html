@@ -5,6 +5,7 @@
     <title th:text="${post.title}">게시글 상세</title>
     <link rel="stylesheet" href="/css/blog.css">
     <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/like.css">
 </head>
 <body>
 <!-- 헤더 파일을 포함 -->
@@ -19,10 +20,18 @@
         </div>
         <p th:text="${post.content}">게시글 내용</p>
     </div>
+    <h1 th:text="${post.view}">조회수</h1>
+
+    <div th:if="${userId != 0 && userId != post.blog.user.id}">
+        <input type="checkbox" id="likeCheckbox" name="like" class="like-checkbox" th:checked="${likedByCurrentUser}">
+        <label for="likeCheckbox" class="like-label">&#x2764;</label>
+    </div>
+
     <button onclick="goBack()">이전 화면으로 돌아가기</button>
     <form th:action="@{/posts/delete/{id}(id=${post.postId})}" method="post" style="display:inline;">
         <button type="submit" onclick="return confirm('정말로 이 게시물을 삭제하시겠습니까?')">게시물 삭제</button>
     </form>
+
     <script>
         function goBack() {
             window.history.back();
@@ -50,6 +59,22 @@
             var dropdown = document.getElementById('dropdown-content');
             dropdown.style.display = 'none';
         }
+    });
+
+    document.getElementById('likeCheckbox').addEventListener('change', function() {
+        var checked = this.checked;
+        console.log(checked);
+        fetch(`/posts/like/${[[${post.postId}]]}?like=${checked}`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('좋아요 상태가 변경되었습니다.');
+                } else {
+                    console.error('좋아요 상태 변경 중 오류 발생.');
+                }
+            })
+            .catch(error => console.error('요청 중 오류 발생:', error));
     });
 </script>
 </html>
