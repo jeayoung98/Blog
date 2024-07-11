@@ -5,6 +5,7 @@ import org.example.blog.jwt.exception.CustomAuthenticationEntryPoint;
 import org.example.blog.jwt.filter.JwtAuthenticationFilter;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.security.CustomUserDetailsService;
+import org.example.blog.service.user.RefreshTokenService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final RefreshTokenService refreshTokenService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -39,7 +41,7 @@ public class SecurityConfig {
                         .anyRequest()
                         .authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenizer,refreshTokenService), UsernamePasswordAuthenticationFilter.class)
                 .formLogin(form -> form.disable())
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

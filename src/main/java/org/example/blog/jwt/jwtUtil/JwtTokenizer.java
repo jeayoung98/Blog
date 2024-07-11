@@ -83,4 +83,14 @@ public class JwtTokenizer {
     public Claims parseRefreshToken(String refreshToken) {
         return parseToken(refreshToken, refreshSecret);
     }
+
+    public String remakeAccessToken(String refreshToken) {
+        Claims claims = parseRefreshToken(refreshToken);
+        Long userId = claims.get("userId", Long.class);
+        String email = claims.getSubject();
+        String name = claims.get("name", String.class);
+        String username = claims.get("username", String.class);
+        List<UserRoleType> roles = (List<UserRoleType>) claims.get("roles");
+        return createAccessToken(userId, email, name, username, roles);
+    }
 }

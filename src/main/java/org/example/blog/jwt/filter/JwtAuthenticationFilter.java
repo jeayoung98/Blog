@@ -11,11 +11,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.blog.domain.user.RefreshToken;
 import org.example.blog.jwt.exception.JwtExceptionCode;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.jwt.token.JwtAuthenticationToken;
 import org.example.blog.security.CustomUserDetails;
 
+import org.example.blog.service.user.RefreshTokenService;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -26,23 +28,25 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenizer jwtTokenizer;
+    private final RefreshTokenService refreshTokenService;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = getToken(request); // accessToken 얻어냄.
-        if(StringUtils.hasText(token)){
-            try{
+        if (StringUtils.hasText(token)) {
+            try {
                 getAuthentication(token);
-            }catch (ExpiredJwtException e){
+            } catch (ExpiredJwtException e) {
                 request.setAttribute("exception", JwtExceptionCode.EXPIRED_TOKEN.getCode());
-                log.error("Expired Token : {}",token,e);
+                log.error("Expired Token : {}", token, e);
                 throw new BadCredentialsException("Expired token exception", e);
-            }catch (UnsupportedJwtException e){
+            } catch (UnsupportedJwtException e) {
                 request.setAttribute("exception", JwtExceptionCode.UNSUPPORTED_TOKEN.getCode());
                 log.error("Unsupported Token: {}", token, e);
                 throw new BadCredentialsException("Unsupported token exception", e);
@@ -58,6 +62,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 log.error("JWT Filter - Internal Error: {}", token, e);
                 throw new BadCredentialsException("JWT filter internal exception", e);
             }
+        } else {
+            remakeAccessToken(request);
         }
         filterChain.doFilter(request, response);
     }
@@ -100,5 +106,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         return null;
+    }
+
+    private void remakeAccessToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String currentRefreshToken = null;
+        if (cookies == null) {
+            return;
+        }
+        for (Cookie cookie : cookies) {
+            if ("refreshToken".equals(cookie.getName())) {
+                currentRefreshToken = cookie.getValue();
+            }
+        }
+        Optional<RefreshToken> refreshToken = refreshTokenService.findRefreshToken(currentRefreshToken);
+        if (refreshToken.isPresent()) {
+            jwtTokenizer.remakeAccessToken(currentRefreshToken);
+        }
     }
 }
