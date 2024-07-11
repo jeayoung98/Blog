@@ -35,7 +35,7 @@ public class HistoryService {
     }
 
     @Transactional
-    public History getHistoryByUserId(Long userId) {
-        return historyRepository.findByUserId(userId);
+    public List<History> getHistoryByUserId(Long userId) {
+        return historyRepository.findHistoriesByUserId(userId);
     }
 }

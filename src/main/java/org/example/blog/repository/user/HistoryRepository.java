@@ -14,5 +14,5 @@ public interface HistoryRepository extends JpaRepository<History,Long> {
 
     List<History> findByUserIdOrderByViewDayAsc(Long userId);
 
-    History findByUserId(Long userId);
+    List<History> findHistoriesByUserId(Long userId);
 }

@@ -137,10 +137,12 @@ public class PostController {
             model.addAttribute("blog", blogService.findBlogByUserId(userId));
             model.addAttribute("likedByCurrentUser", likedByCurrentUser);
             if (blogService.getBlogByPostId(postId).getUser().getId() != userId) {
-                History currentHistory = historyService.getHistoryByUserId(userId);
-                if (currentHistory.getPost().getPostId() != postId && !Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
-                    post.setView(post.getView() + 1);
-                    postService.savePost(post);
+                List<History> currentUserHistories = historyService.getHistoryByUserId(userId);
+                for (History currentHistory : currentUserHistories) {
+                    if (currentHistory.getPost().getPostId() != postId && !Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
+                        post.setView(post.getView() + 1);
+                        postService.savePost(post);
+                    }
                 }
             }
             return "/view/post/postDetail";
