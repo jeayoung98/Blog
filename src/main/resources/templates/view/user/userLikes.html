@@ -17,7 +17,7 @@
     </header>
     <main>
         <div th:if="${posts.isEmpty()}" class="empty-blog">
-            <img src="/images/hi.png" alt="포스트가 없습니다.">
+            <img src="/images/hi.png" alt="좋아요 한 글이 없습니다.">
             <p>포스트가 없습니다.</p>
         </div>
         <div th:unless="${posts.isEmpty()}" class="post-list">
