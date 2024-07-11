@@ -4,6 +4,8 @@ package org.example.blog.jwt.jwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.example.blog.domain.user.UserRoleType;
 import org.springframework.beans.factory.annotation.Value;
@@ -92,5 +94,16 @@ public class JwtTokenizer {
         String username = claims.get("username", String.class);
         List<UserRoleType> roles = (List<UserRoleType>) claims.get("roles");
         return createAccessToken(userId, email, name, username, roles);
+    }
+
+    public String getRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String refreshToken = null;
+        for (Cookie cookie : cookies) {
+            if ("refreshToken".equals(cookie.getName())) {
+                refreshToken = cookie.getValue();
+            }
+        }
+        return refreshToken;
     }
 }

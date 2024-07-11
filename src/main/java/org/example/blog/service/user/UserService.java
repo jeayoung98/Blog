@@ -71,16 +71,6 @@ public class UserService {
         return 0L;
     }
 
-    @Transactional
-    public void killCookie(HttpServletRequest request, HttpServletResponse response) {
-        request.getSession().invalidate();
-
-        Cookie accessToken = new Cookie("accessToken", null);
-        accessToken.setPath("/");
-        accessToken.setMaxAge(0);
-        response.addCookie(accessToken);
-    }
-
     @Transactional(readOnly = true)
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);

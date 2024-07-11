@@ -63,7 +63,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new BadCredentialsException("JWT filter internal exception", e);
             }
         } else {
-            remakeAccessToken(request);
+            if (remakeAccessToken(request) != null) {
+                Cookie cookie = new Cookie("accessToken",remakeAccessToken(request));
+                cookie.setHttpOnly(true);
+                cookie.setPath("/");
+                cookie.setMaxAge(Math.toIntExact(JwtTokenizer.ACCESS_TOKEN_EXPIRE_COUNT / 1000));
+
+                response.addCookie(cookie);
+            }
+
         }
         filterChain.doFilter(request, response);
     }
@@ -108,20 +116,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    private void remakeAccessToken(HttpServletRequest request) {
+    private String remakeAccessToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        String currentRefreshToken = null;
-        if (cookies == null) {
-            return;
-        }
-        for (Cookie cookie : cookies) {
-            if ("refreshToken".equals(cookie.getName())) {
-                currentRefreshToken = cookie.getValue();
+        if (cookies != null) {
+            String currentRefreshToken = jwtTokenizer.getRefreshToken(request);
+            Optional<RefreshToken> refreshToken = refreshTokenService.findRefreshToken(currentRefreshToken);
+            if (refreshToken.isPresent()) {
+                return jwtTokenizer.remakeAccessToken(currentRefreshToken);
             }
         }
-        Optional<RefreshToken> refreshToken = refreshTokenService.findRefreshToken(currentRefreshToken);
-        if (refreshToken.isPresent()) {
-            jwtTokenizer.remakeAccessToken(currentRefreshToken);
-        }
+        return null;
     }
 }
