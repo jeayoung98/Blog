@@ -7,10 +7,12 @@ import org.example.blog.domain.post.Like;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.post.Tag;
+import org.example.blog.domain.user.History;
 import org.example.blog.domain.user.User;
 import org.example.blog.repository.blog.BlogRepository;
 import org.example.blog.repository.post.PostRepository;
 import org.example.blog.repository.post.TagRepository;
+import org.example.blog.repository.user.HistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +28,7 @@ public class PostService {
     private final BlogRepository blogRepository;
     private final TagRepository tagRepository;
     private final LikeService likeService;
-
-
+    private final HistoryRepository historyRepository;
 
     @Transactional
     public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published) {
@@ -83,7 +84,6 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public List<Post> getLikesPosts(User user) {
         List<Like> likes = likeService.findLikesByUser(user);
         List<Post> posts = new ArrayList<>();
@@ -92,5 +92,13 @@ public class PostService {
         }
         return posts;
     }
+
+//    public List<Post> getUserSeenPosts(User user) {
+//        List<History> histories = historyRepository.findHistoriesByUser(user);
+//        List<Post> posts = new ArrayList<>();
+//        for (History history : histories) {
+//            posts.add(history.getHistory())
+//        }
+//    }
 
 }

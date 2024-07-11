@@ -57,4 +57,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likes = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<History> histories;
+
+
 }

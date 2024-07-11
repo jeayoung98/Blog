@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.blog.Blog;
+import org.example.blog.domain.user.History;
 import org.example.blog.domain.user.User;
 
 import java.util.*;
@@ -57,5 +58,8 @@ public class Post {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
+    private List<History> histories;
 
 }
