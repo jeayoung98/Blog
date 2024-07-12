@@ -1,31 +1,19 @@
 package org.example.blog.controller.user;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.example.blog.domain.Image;
 import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.FileStorageService;
 import org.example.blog.service.user.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
-
-    private final BlogService blogService;
-
     private final FileStorageService fileStorageService;
 
     @GetMapping

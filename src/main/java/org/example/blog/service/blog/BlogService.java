@@ -21,7 +21,6 @@ import java.util.Optional;
 public class BlogService implements BlogInterface {
     private final BlogRepository blogRepository;
     private final UserService userService;
-    private final PostService postService;
 
     @Transactional
     public Long createBlog(String title, Long userId) {
@@ -67,13 +66,7 @@ public class BlogService implements BlogInterface {
         blog.setPosts(list);
     }
 
-    public Blog getBlogByPostId(Long postId) {
-        Post post = postService.getPostById(postId);
-        if (post != null) {
-            return post.getBlog();
-        }
-        return null;
-    }
+
 
 
 }

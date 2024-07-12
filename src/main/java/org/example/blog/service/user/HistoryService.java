@@ -1,8 +1,11 @@
 package org.example.blog.service.user;
 
 import lombok.RequiredArgsConstructor;
+import org.example.blog.domain.post.Post;
 import org.example.blog.domain.user.History;
+import org.example.blog.domain.user.User;
 import org.example.blog.repository.user.HistoryRepository;
+import org.example.blog.service.user.userInterface.HistoryInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class HistoryService{
+public class HistoryService implements HistoryInterface {
     private final HistoryRepository historyRepository;
 
     public List<History> getHistoriesByUserIdByViewDayAsc(Long userId) {
@@ -18,9 +21,11 @@ public class HistoryService{
     }
 
     @Transactional
-    public void saveHistory(History history, Long userId, Long postId) {
-        if (userId == 0L) return;
-        History historyByUserIdAndPostPostId = historyRepository.findHistoryByUserIdAndPostPostId(userId, postId);
+    public void saveHistory(History history, User user, Post post) {
+        history.setPost(post);
+        history.setUser(user);
+        if (user.getId() == 0L) return;
+        History historyByUserIdAndPostPostId = historyRepository.findHistoryByUserIdAndPostPostId(user.getId(), post.getPostId());
         if (historyByUserIdAndPostPostId != null) {
             deleteHistory(historyByUserIdAndPostPostId);
             historyRepository.save(history);

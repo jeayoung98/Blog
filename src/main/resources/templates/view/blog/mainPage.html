@@ -29,7 +29,7 @@
                     <div class="post-title">
                         <h2 class="title" th:text="${post.title}">제목</h2>
                         <div class="user-name">
-                            <p th:text="${user != null ? 'by '+ user.username : 'Guest'}">Username</p>
+                            <p th:text="${'by '+ post.blog.user.name}">Username</p>
                         </div>
                         <div class="post-sub">
                             <p th:text="${post.likes.size()}+' likes'">좋아요 수</p>

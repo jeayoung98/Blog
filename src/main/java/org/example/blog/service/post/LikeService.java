@@ -13,6 +13,7 @@ import org.example.blog.service.user.userInterface.UserInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,6 +52,14 @@ public class LikeService implements LikeInterface {
         return likeRepository.findLikesByPost(post);
     }
 
+    public List<Post> getLikesPosts(User user) {
+        List<Like> likes = findLikesByUser(user);
+        List<Post> posts = new ArrayList<>();
+        for (Like like : likes) {
+            posts.add(postService.getPostById(like.getPost().getPostId()));
+        }
+        return posts;
+    }
 
 
 }

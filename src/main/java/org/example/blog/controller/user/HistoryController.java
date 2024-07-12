@@ -22,7 +22,6 @@ import java.util.List;
 @RequestMapping("/history")
 @RequiredArgsConstructor
 public class HistoryController {
-
     private final UserService userService;
     private final BlogService blogService;
     private final LikeService likeService;
@@ -49,7 +48,7 @@ public class HistoryController {
         model.addAttribute("user", user);
         model.addAttribute("blog", blog);
 
-        List<Post> posts = postService.getLikesPosts(user);
+        List<Post> posts = likeService.getLikesPosts(user);
         model.addAttribute("posts", posts);
 
         return "/view/user/userLikes";

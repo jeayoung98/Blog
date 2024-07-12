@@ -72,7 +72,7 @@ public class UserService implements UserInterface {
         return 0L;
     }
 
-    @Transactional(readOnly = true)
+
     @Override
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);

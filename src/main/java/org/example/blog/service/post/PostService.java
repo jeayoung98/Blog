@@ -18,21 +18,24 @@ import org.example.blog.service.blog.blogInterface.BlogInterface;
 import org.example.blog.service.post.postInterface.LikeInterface;
 import org.example.blog.service.post.postInterface.PostInterface;
 import org.example.blog.service.post.postInterface.TagInterface;
+import org.example.blog.service.user.userInterface.HistoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostService implements PostInterface {
-
     private final PostRepository postRepository;
-    private final LikeInterface likeService;
     private final BlogInterface blogService;
     private final TagInterface tagService;
+    private final HistoryInterface historyService;
+
+
 
     @Transactional
     public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published) {
@@ -48,6 +51,7 @@ public class PostService implements PostInterface {
         post.setImages(images);
         postRepository.save(post);
     }
+
     @Transactional
     public void savePost(Post post) {
         postRepository.save(post);
@@ -89,14 +93,20 @@ public class PostService implements PostInterface {
                 .collect(Collectors.toList());
     }
 
-    public List<Post> getLikesPosts(User user) {
-        List<Like> likes = likeService.findLikesByUser(user);
-        List<Post> posts = new ArrayList<>();
-        for (Like like : likes) {
-            posts.add(getPostById(like.getPost().getPostId()));
+    public void postView(Long postId,Long userId) {
+        if (getBlogByPostId(postId).getUser().getId() != userId) {
+            List<History> currentUserHistories = historyService.getHistoryByUserId(userId);
+            for (History currentHistory : currentUserHistories) {
+                if (currentHistory.getPost().getPostId() != postId && !Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
+                    Post post=getPostById(postId);
+                    post.setView(post.getView() + 1);
+                    savePost(post);
+                }
+            }
         }
-        return posts;
     }
+
+
 
     public void updatePost(Long postId, Post updatedPost) {
         Post post = getPostById(postId);
@@ -109,6 +119,14 @@ public class PostService implements PostInterface {
             post.setImages(updatedPost.getImages());
         }
         postRepository.save(post);
+    }
+
+    public Blog getBlogByPostId(Long postId) {
+        Post post = getPostById(postId);
+        if (post != null) {
+            return post.getBlog();
+        }
+        return null;
     }
 
 

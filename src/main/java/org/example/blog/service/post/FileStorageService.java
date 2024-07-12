@@ -1,13 +1,16 @@
 package org.example.blog.service.post;
 
 import lombok.RequiredArgsConstructor;
+import org.example.blog.domain.Image;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -31,5 +34,23 @@ public class FileStorageService {
         Files.copy(file.getInputStream(), filePath);
         System.out.println("저장완료 !!");
         return fileName;
+    }
+
+    public List<Image> imagePaths(MultipartFile[] images) {
+        List<Image> imagePaths = Arrays.stream(images)
+                .map(file -> {
+                    try {
+                        Image image = new Image();
+                        String filePath = storeFile(file);
+                        if (filePath == null) {
+                            image.setFilePath(null);
+                        }else image.setFilePath("/upload/" + filePath);
+
+                        return image;
+                    } catch (IOException e) {
+                        throw new RuntimeException("파일 저장 중 오류 발생", e);
+                    }
+                }).collect(Collectors.toList());
+        return imagePaths;
     }
 }
