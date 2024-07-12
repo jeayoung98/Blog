@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Controller
@@ -63,6 +64,7 @@ public class PostController {
                              @RequestParam("tags") String tags,
                              @RequestParam("image") MultipartFile[] images,
                              @RequestParam(value = "published", required = false) String published,
+                             @RequestParam(value = "status",required = false) String status,
                              HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
 
@@ -83,11 +85,10 @@ public class PostController {
             // 파일 저장 처리
             List<Image> imagePaths = fileStorageService.imagePaths(images);
             PublishedType draft = published != null ? PublishedType.DRAFT : PublishedType.PUBLISHED;
-
+            boolean isPublic = status != null;
             // 게시물 생성 처리
-            postService.createPost(blog, title, content, tags, imagePaths,draft);
+            postService.createPost(blog, title, content, tags, imagePaths,draft,isPublic);
 
-            redirectAttributes.addFlashAttribute("success", "게시물이 성공적으로 생성되었습니다!");
             return "redirect:/blogs/" + blogService.findBlogByUserId(user.getId()).getBlogId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "게시물 생성 중 오류가 발생했습니다: " + e.getMessage());
@@ -140,7 +141,7 @@ public class PostController {
 
 
         if (userId != null) {
-            if (blogService.findBlogByUserId(userId).getBlogId() == blogId) {
+            if (Objects.equals(blogService.findBlogByUserId(userId).getBlogId(), blogId)) {
                 postService.deletePostById(postId);
             }
         }
@@ -148,14 +149,21 @@ public class PostController {
     }
 
     @GetMapping("/update/{id}")
-    public String showEditPostForm(@PathVariable("id") Long postId, Model model) {
+    public String showEditPostForm(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
         Post post = postService.getPostById(postId);
         model.addAttribute("post", post);
+        model.addAttribute("user",userService.findUserById(userService.getUserIdFromCookie(request)));
         return "/view/post/editPost";
     }
 
     @PostMapping("/update/{id}")
-    public String editPost(@PathVariable("id") Long postId, @ModelAttribute Post post) {
+    public String editPost(@PathVariable("id") Long postId, @ModelAttribute Post post,
+                           @RequestParam(value = "published", required = false) String published,
+                           @RequestParam(value = "status",required = false) String status) {
+        PublishedType draft = published != null ? PublishedType.DRAFT : PublishedType.PUBLISHED;
+        boolean isPublic = status != null;
+        post.setPublished(draft);
+        post.setStatus(isPublic);
         postService.updatePost(postId, post);
         return "redirect:/posts/" + postId;
     }

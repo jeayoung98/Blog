@@ -20,49 +20,82 @@
         <label for="content">내용:</label>
         <textarea id="content" name="content" th:text="${post.content}" required></textarea>
 
-<!--        <label for="tags">태그 (쉼표로 구분):</label>-->
-<!--        <input type="text" id="tags" name="tags" th:value="${#strings.arrayJoin(post.tags.stream().map(t -> t.name).toArray(), ',')}" required>-->
+        <label for="tags">태그 (쉼표로 구분):</label>
+        <input type="text" id="tags" th:value="${post.tags}" name="tags">
 
         <label for="images">이미지 업로드:</label>
-        <input type="file" id="images" name="image" multiple>
+        <input type="file" id="images" name="image" th:value="${post.images}" multiple>
 
         <label for="published">임시글 설정:</label>
-        <input type="checkbox" id="published" name="published" th:checked="${post.published == T(org.example.blog.domain.post.PublishedType).DRAFT ? true : false}" value="DRAFT"><br>
+        <div class="toggle-switch">
+            <input type="checkbox" id="published" name="published">
+            <span class="slider"></span>
+        </div>
 
         <label for="status">공개 설정:</label>
-        <input type="checkbox" id="status" name="status" th:checked="${post.status}"><br>
+        <div class="toggle-switch">
+            <input type="checkbox" id="status" name="status">
+            <span class="slider"></span>
+        </div>
 
-        <button type="submit">수정</button>
-        <button type="button" id="cancel-button">취소</button>
+        <input type="submit" value="게시물 작성">
     </form>
+</div>
 </div>
 </body>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('cancel-button').addEventListener('click', function() {
-            window.location.href = '/posts/' + [[${post.postId}]];
-        });
-    });
 
-    // 공통 함수로 드롭다운 토글 기능 정의
     function toggleDropdown() {
         var dropdown = document.getElementById('dropdown-content');
         dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
     }
 
-    // profile-pic에 클릭 이벤트 리스너 추가
     var profilePics = document.querySelectorAll('.profile-pic');
     profilePics.forEach(function(pic) {
         pic.addEventListener('click', toggleDropdown);
     });
 
-    // 클릭 외부 감지하여 드롭다운 닫기
+
     document.addEventListener('click', function(event) {
         var isClickInside = document.querySelector('.header-right').contains(event.target);
         if (!isClickInside) {
             var dropdown = document.getElementById('dropdown-content');
             dropdown.style.display = 'none';
         }
+    });
+
+    // Handle form submission to include toggle values
+    document.getElementById('postForm').addEventListener('submit', function(event) {
+        var published = document.getElementById('published').checked;
+        var status = document.getElementById('status').checked;
+
+        // Append hidden inputs with toggle values to the form
+        var form = event.target;
+        var publishedInput = document.createElement('input');
+        publishedInput.type = 'hidden';
+        publishedInput.name = 'published';
+        publishedInput.value = published ? 'true' : 'false';
+
+        var statusInput = document.createElement('input');
+        statusInput.type = 'hidden';
+        statusInput.name = 'status';
+        statusInput.value = status ? 'true' : 'false';
+
+        form.appendChild(publishedInput);
+        form.appendChild(statusInput);
+    });
+
+    // Toggle switches
+    document.querySelectorAll('.toggle-switch').forEach(function(toggle) {
+        toggle.addEventListener('click', function(event) {
+            if (event.target.classList.contains('slider')) {
+                var input = this.querySelector('input');
+                input.checked = !input.checked;
+                var slider = input.nextElementSibling;
+                slider.style.backgroundColor = input.checked ? '#007bff' : '#ccc';
+                slider.querySelector(':before').style.transform = input.checked ? 'translateX(26px)' : 'translateX(0)';
+            }
+        });
     });
 </script>
 </html>

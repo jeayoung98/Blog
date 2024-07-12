@@ -27,8 +27,6 @@ public class BlogController {
     private final UserService userService;
     private final BlogService blogService;
     private final PostService postService;
-    private final JwtTokenizer jwtTokenizer;
-    private final LikeService likeService;
 
     @GetMapping()
     public String showMainPage(HttpServletRequest request,Model model){

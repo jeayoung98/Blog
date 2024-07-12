@@ -66,6 +66,10 @@ public class BlogService implements BlogInterface {
         blog.setPosts(list);
     }
 
+    public void saveBlog(Blog blog) {
+        blogRepository.save(blog);
+    }
+
 
 
 

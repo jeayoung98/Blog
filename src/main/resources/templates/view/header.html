@@ -19,7 +19,7 @@
             <a href="/posts/new">새 글 작성</a>
             <a th:href="@{/blogs/draft/{id} (id=${blog != null ? blog.blogId : 0})}">임시글 목록</a>
             <a th:href="@{/history/like/{id} (id=${user != null ? user.id : 0})}">활동 기록</a>
-            <a href="/logout">마이페이지</a>
+            <a href="/mypage">마이페이지</a>
             <a href="/logout">로그아웃</a>
         </div>
     </div>

@@ -38,13 +38,15 @@ public class PostService implements PostInterface {
 
 
     @Transactional
-    public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published) {
+    public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published,boolean status) {
         Post post = new Post();
         post.setBlog(blog);
         post.setTitle(title);
+
         post.setContent(content);
         post.setTags(parseTags(tags));
         post.setPublished(published);
+        post.setStatus(status);
         for (Image image : images) {
             image.setPost(post);
         }
