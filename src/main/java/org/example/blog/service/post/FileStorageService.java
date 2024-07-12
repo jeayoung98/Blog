@@ -3,6 +3,7 @@ package org.example.blog.service.post;
 import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.Image;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class FileStorageService {
     private final String uploadDir = "C://Temp/upload/";
 
+    @Transactional
     public String storeFile(MultipartFile file) throws IOException {
         // 파일 저장 디렉토리 경로 설정
         Path uploadPath = Paths.get(uploadDir);
@@ -32,7 +34,6 @@ public class FileStorageService {
 
         // 파일 저장
         Files.copy(file.getInputStream(), filePath);
-        System.out.println("저장완료 !!");
         return fileName;
     }
 

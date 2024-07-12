@@ -25,10 +25,16 @@
         <input type="file" id="images" name="image" multiple>
 
         <label for="published">임시글 설정:</label>
-        <input type="checkbox" id="published" name="published"><br>
+        <div class="toggle-switch">
+            <input type="checkbox" id="published" name="published">
+            <span class="slider"></span>
+        </div>
 
         <label for="status">공개 설정:</label>
-        <input type="checkbox" id="status" name="status"><br>
+        <div class="toggle-switch">
+            <input type="checkbox" id="status" name="status">
+            <span class="slider"></span>
+        </div>
 
         <input type="submit" value="게시물 작성">
     </form>
@@ -54,6 +60,40 @@
             var dropdown = document.getElementById('dropdown-content');
             dropdown.style.display = 'none';
         }
+    });
+
+    // Handle form submission to include toggle values
+    document.getElementById('postForm').addEventListener('submit', function(event) {
+        var published = document.getElementById('published').checked;
+        var status = document.getElementById('status').checked;
+
+        // Append hidden inputs with toggle values to the form
+        var form = event.target;
+        var publishedInput = document.createElement('input');
+        publishedInput.type = 'hidden';
+        publishedInput.name = 'published';
+        publishedInput.value = published ? 'true' : 'false';
+
+        var statusInput = document.createElement('input');
+        statusInput.type = 'hidden';
+        statusInput.name = 'status';
+        statusInput.value = status ? 'true' : 'false';
+
+        form.appendChild(publishedInput);
+        form.appendChild(statusInput);
+    });
+
+    // Toggle switches
+    document.querySelectorAll('.toggle-switch').forEach(function(toggle) {
+        toggle.addEventListener('click', function(event) {
+            if (event.target.classList.contains('slider')) {
+                var input = this.querySelector('input');
+                input.checked = !input.checked;
+                var slider = input.nextElementSibling;
+                slider.style.backgroundColor = input.checked ? '#007bff' : '#ccc';
+                slider.querySelector(':before').style.transform = input.checked ? 'translateX(26px)' : 'translateX(0)';
+            }
+        });
     });
 </script>
 </html>

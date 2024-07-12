@@ -1,47 +1,29 @@
-.div-container {
+body {
     font-family: Arial, sans-serif;
-    background-color: #645fa6; /* 배경 색상 */
-    color: white;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+}
+
+.div-container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
-    flex-direction: column; /* 수직 정렬을 위해 추가 */
-}
-
-.wrapper {
-    text-align: center;
 }
 
 .container {
     background-color: #fff;
-    color: #333;
-    padding: 40px; /* 패딩을 추가하여 내용물 간의 간격을 넓힘 */
-    border-radius: 8px; /* 둥근 테두리 */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 */
-    text-align: center;
-    width: 70%; /* 컨테이너 너비 설정 */
-    max-width: 600px; /* 최대 너비 설정 */
-    position: relative; /* 부모 요소 기준으로 절대 위치 */
-    margin-top: 30px; /* 상단 여백 추가 */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
 }
 
 .h_1 {
-    margin: 0;
-    position: absolute; /* 절대 위치 */
-    top: 5px; /* 박스 위로 위치 */
-    left: 50%; /* 수평 가운데 정렬 */
-    transform: translateX(-50%); /* 수평으로 중앙 맞춤 */
-    font-size: 2em; /* 폰트 크기 조정 */
-    color: #ffffff; /* 배경과 대비되는 색상 */
-    background-color: #645fa6; /* 배경과 같은 색상으로 텍스트 배경 설정 */
-    padding: 0 10px; /* 텍스트 주변에 패딩 추가 */
-}
-
-p {
-    margin-bottom: 20px;
-    font-size: 1.2em; /* 폰트 크기 조정 */
+    text-align: center;
+    color: #333;
 }
 
 form {
@@ -51,30 +33,88 @@ form {
 
 label {
     margin-top: 10px;
-    left: 0%;
-    color: #333;
+    margin-bottom: 5px;
+    color: #555;
 }
 
 input[type="text"],
-textarea,
-input[type="file"] {
-    margin-top: 5px;
+textarea {
+    width: 100%;
     padding: 10px;
-    border: 2px solid #ccc;
-    border-radius: 4px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 150px;
+}
+
+input[type="file"] {
+    margin-top: 10px;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-bottom: 10px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #66bb6a;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
 }
 
 input[type="submit"] {
-    background-color: #007bff; /* 파란색 배경 */
+    background-color: #007bff;
     color: white;
-    padding: 10px 20px;
+    padding: 10px;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 16px;
     margin-top: 20px;
 }
 
 input[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #007bff;
+}
+a {
+    color: black;
 }
