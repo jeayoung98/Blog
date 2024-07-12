@@ -95,5 +95,10 @@ public class UserService implements UserInterface {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
 
 }

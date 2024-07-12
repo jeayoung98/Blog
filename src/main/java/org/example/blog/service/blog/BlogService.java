@@ -70,6 +70,10 @@ public class BlogService implements BlogInterface {
         blogRepository.save(blog);
     }
 
+    public void deleteBlog(Long userId) {
+        blogRepository.deleteByUserId(userId);
+    }
+
 
 
 

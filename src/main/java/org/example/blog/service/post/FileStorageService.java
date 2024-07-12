@@ -2,6 +2,7 @@ package org.example.blog.service.post;
 
 import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.Image;
+import org.example.blog.service.post.postInterface.ImageInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FileStorageService {
     private final String uploadDir = "C://Temp/upload/";
+    private final ImageInterface imageService;
 
     @Transactional
     public String storeFile(MultipartFile file) throws IOException {
@@ -35,6 +37,23 @@ public class FileStorageService {
         // 파일 저장
         Files.copy(file.getInputStream(), filePath);
         return fileName;
+    }
+    public List<Image> postImagePaths(MultipartFile[] images,Long postId) {
+        List<Image> imagePaths = Arrays.stream(images)
+                .map(file -> {
+                    try {
+                        Image image = imageService.getImageByPostId(postId);
+                        String filePath = storeFile(file);
+                        if (filePath == null) {
+                            image.setFilePath(null);
+                        }else image.setFilePath("/upload/" + filePath);
+
+                        return image;
+                    } catch (IOException e) {
+                        throw new RuntimeException("파일 저장 중 오류 발생", e);
+                    }
+                }).collect(Collectors.toList());
+        return imagePaths;
     }
 
     public List<Image> imagePaths(MultipartFile[] images) {

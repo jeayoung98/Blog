@@ -98,28 +98,33 @@ public class PostService implements PostInterface {
     public void postView(Long postId,Long userId) {
         if (getBlogByPostId(postId).getUser().getId() != userId) {
             List<History> currentUserHistories = historyService.getHistoryByUserId(userId);
-            for (History currentHistory : currentUserHistories) {
-                if (currentHistory.getPost().getPostId() != postId && !Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
-                    Post post=getPostById(postId);
-                    post.setView(post.getView() + 1);
-                    savePost(post);
+            if (currentUserHistories.size() == 0) {
+                Post post = getPostById(postId);
+                post.setView(post.getView() + 1);
+                savePost(post);
+            } else {
+                for (History currentHistory : currentUserHistories) {
+                    if (currentHistory.getPost().getPostId() != postId && !Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
+                        Post post=getPostById(postId);
+                        post.setView(post.getView() + 1);
+                        savePost(post);
+                    }
                 }
             }
+
         }
     }
 
 
 
-    public void updatePost(Long postId, Post updatedPost) {
+    public void updatePost(Long postId,String title, String content, String tags, List<Image> images, PublishedType published,boolean status) {
         Post post = getPostById(postId);
-        post.setTitle(updatedPost.getTitle());
-        post.setContent(updatedPost.getContent());
+        post.setTitle(title);
+        post.setContent(content);
 //        post.setTags(updatedPost.getTags());
-        post.setPublished(updatedPost.getPublished());
-        post.setStatus(updatedPost.isStatus());
-        if (updatedPost.getImages() != null && !updatedPost.getImages().isEmpty()) {
-            post.setImages(updatedPost.getImages());
-        }
+        post.setPublished(published);
+        post.setStatus(status);
+        post.setImages(images);
         postRepository.save(post);
     }
 

@@ -3,6 +3,7 @@ package org.example.blog.domain.user;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.post.Like;
 import org.example.blog.domain.post.Post;
 
@@ -47,7 +48,7 @@ public class User {
         creationDate = new Date();
     }
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -58,7 +59,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Like> likes = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<History> histories;
 
 

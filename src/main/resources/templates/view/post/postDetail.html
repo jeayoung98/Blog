@@ -31,15 +31,20 @@
 
     <div class="button-container">
         <button onclick="goBack()">돌아가기</button>
-        <button onclick="location.href='/posts/update/${post.postId}'">수정</button>
+        <button onclick="update()">수정</button>
         <form th:action="@{/posts/delete/{id}(id=${post.postId})}" method="post" style="display:inline;">
             <button type="submit" class="delete" onclick="return confirm('정말로 이 게시물을 삭제하시겠습니까?')">게시물 삭제</button>
         </form>
     </div>
 
     <script>
+        let postId = [[${post.postId}]];
         function goBack() {
             window.history.back();
+        }
+
+        function update(){
+            window.location.href="/posts/update/"+postId;
         }
     </script>
 </div>

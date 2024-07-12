@@ -110,6 +110,9 @@ public class PostController {
             model.addAttribute("error", "게시글을 찾을 수 없습니다.");
             return "/view/error";
         } else {
+            // 조회수 처리
+            postService.postView(postId,userId);
+
             History history = new History();
             historyService.saveHistory(history,user,post);
             int likes = likeService.findLikesByPost(post).size();
@@ -118,8 +121,7 @@ public class PostController {
             model.addAttribute("likedByCurrentUser", likedByCurrentUser);
             model.addAttribute("likes", likes);
 
-            // 조회수 처리
-            postService.postView(postId,userId);
+
             return "/view/post/postDetail";
         }
     }
@@ -157,14 +159,31 @@ public class PostController {
     }
 
     @PostMapping("/update/{id}")
-    public String editPost(@PathVariable("id") Long postId, @ModelAttribute Post post,
+    public String editPost(@PathVariable("id") Long postId,
+                           @RequestParam("title") String title,
+                           @RequestParam("content") String content,
+                           @RequestParam("tags") String tags,
+                           @RequestParam("image") MultipartFile[] images,
                            @RequestParam(value = "published", required = false) String published,
-                           @RequestParam(value = "status",required = false) String status) {
-        PublishedType draft = published != null ? PublishedType.DRAFT : PublishedType.PUBLISHED;
-        boolean isPublic = status != null;
-        post.setPublished(draft);
-        post.setStatus(isPublic);
-        postService.updatePost(postId, post);
-        return "redirect:/posts/" + postId;
+                           @RequestParam(value = "status", required = false) String status,
+                           HttpServletRequest request,
+                           RedirectAttributes redirectAttributes) {
+        try {
+            User user = userService.findUserById(userService.getUserIdFromCookie(request));
+//            Blog blog = blogService.findBlogByUserId(user.getId());
+//            Post post = postService.getPostById(postId);
+            // 파일 저장 처리
+            List <Image> imagePaths = fileStorageService.postImagePaths(images,postId);
+            PublishedType draft = published.equals("on,true") ? PublishedType.DRAFT : PublishedType.PUBLISHED;
+            boolean isPublic = !status.equals("false");
+            // 게시물 생성 처리
+            postService.updatePost(postId, title, content, tags, imagePaths, draft, isPublic);
+
+            return "redirect:/blogs/" + blogService.findBlogByUserId(user.getId()).getBlogId();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "게시물 생성 중 오류가 발생했습니다: " + e.getMessage());
+            System.out.println(e.getMessage());
+            return "redirect:/posts/"+postId;
+        }
     }
 }

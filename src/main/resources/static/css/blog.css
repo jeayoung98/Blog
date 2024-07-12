@@ -13,6 +13,19 @@ header {
     margin-bottom: 20px;
 }
 
+header h1 a {
+    text-decoration: none;
+    color: inherit;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+header h1 a.highlight {
+    background-color: yellow;
+    color: black;
+}
+
 .post-list {
     display: flex;
     flex-wrap: wrap;
@@ -57,9 +70,11 @@ header {
         width: 100%;
     }
 }
-h2,p,a {
+
+h2, p, a {
     text-decoration: none;
 }
+
 .title {
     margin-top: 5px;
 }

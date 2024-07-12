@@ -26,6 +26,6 @@ public class Blog {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Post> posts;
 }

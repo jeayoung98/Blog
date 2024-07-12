@@ -10,5 +10,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email); // 이메일 기준으로 사용자 찾기
     User findByUsername(String username); // 사용자 이름으로 사용자 찾기
+    void deleteById(Long userId);
     List<User> findByEmailStatusTrue(); // 이메일 수신 상태 true 인 사용자 찾기
 }

@@ -13,12 +13,12 @@
 <div class="blog-container">
     <header>
         <h1><a th:text="${user.name}+'님의 시청 기록'" th:href="@{/history/user/{id} (id=${user != null ? user.id : 0})}">시청 기록</a></h1>
-        <h1><a th:text="${user.name}+'님의 좋아요 누른 글'" th:href="@{/history/like/{id} (id=${user != null ? user.id : 0})}">좋아요</a></h1>
+        <h1><a class="highlight" th:text="${user.name}+'님의 좋아요 누른 글'" th:href="@{/history/like/{id} (id=${user != null ? user.id : 0})}">좋아요</a></h1>
     </header>
     <main>
         <div th:if="${posts.isEmpty()}" class="empty-blog">
             <img src="/images/hi.png" alt="좋아요 한 글이 없습니다.">
-            <p>포스트가 없습니다.</p>
+            <p>좋아요 한 글이 없습니다.</p>
         </div>
         <div th:unless="${posts.isEmpty()}" class="post-list">
             <div th:each="post : ${posts}" class="post-preview">

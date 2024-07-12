@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns="http://www.w3.org/1999/html">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>게시물 수정</title>
@@ -8,12 +8,10 @@
 </head>
 <body>
 <div th:replace="~{view/header :: header}"></div>
-
-<div class="post-container">
-    <header>
-        <h1>게시물 수정</h1>
-    </header>
-    <form th:action="@{/posts/update/{id}(id=${post.postId})}" method="post" enctype="multipart/form-data">
+<div class="div-container">
+    <div class="container">
+        <h1 class="h_1">새 글 작성</h1>
+    <form th:action="@{/posts/update/{id}(id=${post.postId})}" method="post" enctype="multipart/form-data" id="postForm">
         <label for="title">제목:</label>
         <input type="text" id="title" name="title" th:value="${post.title}" required>
 
@@ -24,7 +22,7 @@
         <input type="text" id="tags" th:value="${post.tags}" name="tags">
 
         <label for="images">이미지 업로드:</label>
-        <input type="file" id="images" name="image" th:value="${post.images}" multiple>
+        <input type="file" id="images" name="image" multiple>
 
         <label for="published">임시글 설정:</label>
         <div class="toggle-switch">
@@ -38,64 +36,64 @@
             <span class="slider"></span>
         </div>
 
-        <input type="submit" value="게시물 작성">
+        <input type="submit" value="게시물 수정">
     </form>
 </div>
 </div>
 </body>
-<script>
+    <script>
 
-    function toggleDropdown() {
-        var dropdown = document.getElementById('dropdown-content');
-        dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
-    }
-
-    var profilePics = document.querySelectorAll('.profile-pic');
-    profilePics.forEach(function(pic) {
-        pic.addEventListener('click', toggleDropdown);
-    });
-
-
-    document.addEventListener('click', function(event) {
-        var isClickInside = document.querySelector('.header-right').contains(event.target);
-        if (!isClickInside) {
+        function toggleDropdown() {
             var dropdown = document.getElementById('dropdown-content');
-            dropdown.style.display = 'none';
+            dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
         }
-    });
 
-    // Handle form submission to include toggle values
-    document.getElementById('postForm').addEventListener('submit', function(event) {
-        var published = document.getElementById('published').checked;
-        var status = document.getElementById('status').checked;
+        var profilePics = document.querySelectorAll('.profile-pic');
+        profilePics.forEach(function(pic) {
+            pic.addEventListener('click', toggleDropdown);
+        });
 
-        // Append hidden inputs with toggle values to the form
-        var form = event.target;
-        var publishedInput = document.createElement('input');
-        publishedInput.type = 'hidden';
-        publishedInput.name = 'published';
-        publishedInput.value = published ? 'true' : 'false';
 
-        var statusInput = document.createElement('input');
-        statusInput.type = 'hidden';
-        statusInput.name = 'status';
-        statusInput.value = status ? 'true' : 'false';
-
-        form.appendChild(publishedInput);
-        form.appendChild(statusInput);
-    });
-
-    // Toggle switches
-    document.querySelectorAll('.toggle-switch').forEach(function(toggle) {
-        toggle.addEventListener('click', function(event) {
-            if (event.target.classList.contains('slider')) {
-                var input = this.querySelector('input');
-                input.checked = !input.checked;
-                var slider = input.nextElementSibling;
-                slider.style.backgroundColor = input.checked ? '#007bff' : '#ccc';
-                slider.querySelector(':before').style.transform = input.checked ? 'translateX(26px)' : 'translateX(0)';
+        document.addEventListener('click', function(event) {
+            var isClickInside = document.querySelector('.header-right').contains(event.target);
+            if (!isClickInside) {
+                var dropdown = document.getElementById('dropdown-content');
+                dropdown.style.display = 'none';
             }
         });
-    });
-</script>
+
+
+        document.getElementById('postForm').addEventListener('submit', function(event) {
+            var published = document.getElementById('published').checked;
+            var status = document.getElementById('status').checked;
+
+
+            var form = event.target;
+            var publishedInput = document.createElement('input');
+            publishedInput.type = 'hidden';
+            publishedInput.name = 'published';
+            publishedInput.value = published ? 'true' : 'false';
+
+            var statusInput = document.createElement('input');
+            statusInput.type = 'hidden';
+            statusInput.name = 'status';
+            statusInput.value = status ? 'true' : 'false';
+
+            form.appendChild(publishedInput);
+            form.appendChild(statusInput);
+        });
+
+
+        document.querySelectorAll('.toggle-switch').forEach(function(toggle) {
+            toggle.addEventListener('click', function(event) {
+                if (event.target.classList.contains('slider')) {
+                    var input = this.querySelector('input');
+                    input.checked = !input.checked;
+                    var slider = input.nextElementSibling;
+                    slider.style.backgroundColor = input.checked ? '#007bff' : '#ccc';
+                    slider.querySelector(':before').style.transform = input.checked ? 'translateX(26px)' : 'translateX(0)';
+                }
+            });
+        });
+    </script>
 </html>

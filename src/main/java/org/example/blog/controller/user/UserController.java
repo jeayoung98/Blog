@@ -7,6 +7,8 @@ import org.example.blog.domain.user.User;
 import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.FileStorageService;
 import org.example.blog.service.user.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -126,4 +128,6 @@ public class UserController {
 
         return "redirect:/mypage";
     }
+
+
 }
