@@ -133,9 +133,13 @@ public class PostController {
             history.setPost(post);
             history.setUser(user);
             historyService.saveHistory(history,userId,postId);
+            int likes = likeService.findLikesByPost(post).size();
             model.addAttribute("post", post);
             model.addAttribute("blog", blogService.findBlogByUserId(userId));
             model.addAttribute("likedByCurrentUser", likedByCurrentUser);
+            model.addAttribute("likes", likes);
+
+            // 조회수 처리
             if (blogService.getBlogByPostId(postId).getUser().getId() != userId) {
                 List<History> currentUserHistories = historyService.getHistoryByUserId(userId);
                 for (History currentHistory : currentUserHistories) {
@@ -149,8 +153,8 @@ public class PostController {
         }
     }
 
-    @PostMapping("/delete/{id}")
-    public String deletePost(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
+    @DeleteMapping("/delete/{id}")
+    public String deletePost(@PathVariable("id") Long postId,HttpServletRequest request) {
         Long blogId = blogService.getBlogByPostId(postId).getBlogId();
         Cookie[] cookies = request.getCookies();
         String accessToken = null;
@@ -170,7 +174,20 @@ public class PostController {
                 postService.deletePostById(postId);
             }
         }
-        model.addAttribute("blogId",blogId);
+//        model.addAttribute("blogId",blogId);
         return "redirect:/blogs/" + blogId;
+    }
+
+    @GetMapping("/update/{id}")
+    public String showEditPostForm(@PathVariable("id") Long postId, Model model) {
+        Post post = postService.getPostById(postId);
+        model.addAttribute("post", post);
+        return "/view/post/editPost";
+    }
+
+    @PostMapping("/update/{id}")
+    public String editPost(@PathVariable("id") Long postId, @ModelAttribute Post post) {
+        postService.updatePost(postId, post);
+        return "redirect:/posts/" + postId;
     }
 }

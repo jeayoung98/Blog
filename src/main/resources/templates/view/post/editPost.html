@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>게시물 수정</title>
-    <link rel="stylesheet" href="/css/blog.css">
+    <link rel="stylesheet" href="/css/newPost.css">
     <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
@@ -13,24 +13,37 @@
     <header>
         <h1>게시물 수정</h1>
     </header>
-    <form th:action="@{/posts/edit/{id}(id=${post.postId})}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/posts/update/{id}(id=${post.postId})}" method="post" enctype="multipart/form-data">
         <label for="title">제목:</label>
-        <input type="text" id="title" name="title" required>
+        <input type="text" id="title" name="title" th:value="${post.title}" required>
 
         <label for="content">내용:</label>
-        <textarea id="content" name="content" required></textarea>
+        <textarea id="content" name="content" th:text="${post.content}" required></textarea>
 
-        <label for="tags">태그 (쉼표로 구분):</label>
-        <input type="text" id="tags" name="tags">
+<!--        <label for="tags">태그 (쉼표로 구분):</label>-->
+<!--        <input type="text" id="tags" name="tags" th:value="${#strings.arrayJoin(post.tags.stream().map(t -> t.name).toArray(), ',')}" required>-->
 
         <label for="images">이미지 업로드:</label>
         <input type="file" id="images" name="image" multiple>
 
-        <input type="submit" value="수정">
+        <label for="published">임시글 설정:</label>
+        <input type="checkbox" id="published" name="published" th:checked="${post.published == T(org.example.blog.domain.post.PublishedType).DRAFT ? true : false}" value="DRAFT"><br>
+
+        <label for="status">공개 설정:</label>
+        <input type="checkbox" id="status" name="status" th:checked="${post.status}"><br>
+
+        <button type="submit">수정</button>
+        <button type="button" id="cancel-button">취소</button>
     </form>
 </div>
 </body>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('cancel-button').addEventListener('click', function() {
+            window.location.href = '/posts/' + [[${post.postId}]];
+        });
+    });
+
     // 공통 함수로 드롭다운 토글 기능 정의
     function toggleDropdown() {
         var dropdown = document.getElementById('dropdown-content');

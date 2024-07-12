@@ -13,6 +13,11 @@ import org.example.blog.repository.blog.BlogRepository;
 import org.example.blog.repository.post.PostRepository;
 import org.example.blog.repository.post.TagRepository;
 import org.example.blog.repository.user.HistoryRepository;
+import org.example.blog.service.blog.BlogService;
+import org.example.blog.service.blog.blogInterface.BlogInterface;
+import org.example.blog.service.post.postInterface.LikeInterface;
+import org.example.blog.service.post.postInterface.PostInterface;
+import org.example.blog.service.post.postInterface.TagInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +27,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PostService {
+public class PostService implements PostInterface {
 
     private final PostRepository postRepository;
-    private final BlogRepository blogRepository;
-    private final TagRepository tagRepository;
-    private final LikeService likeService;
-    private final HistoryRepository historyRepository;
+    private final LikeInterface likeService;
+    private final BlogInterface blogService;
+    private final TagInterface tagService;
 
     @Transactional
     public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published) {
@@ -58,6 +62,7 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
+    @Override
     public Post getPostById(Long id) {
         return postRepository.findById(id).orElse(null);
     }
@@ -67,7 +72,7 @@ public class PostService {
     }
 
     public List<Post> getDraftPostsByBlog(Long blogId) {
-        return postRepository.findByBlogAndPublished(blogRepository.findById(blogId).orElseThrow(), PublishedType.DRAFT);
+        return postRepository.findByBlogAndPublished(blogService.getBlogById(blogId), PublishedType.DRAFT);
     }
 
 
@@ -75,11 +80,11 @@ public class PostService {
     public List<Tag> parseTags(String tags) {
         return Arrays.stream(tags.split(","))
                 .map(String::trim)
-                .map(tagName -> tagRepository.findByName(tagName)
+                .map(tagName -> tagService.getTagByName(tagName)
                         .orElseGet(() -> {
                             Tag newTag = new Tag();
                             newTag.setName(tagName);
-                            return tagRepository.save(newTag);
+                            return tagService.saveTag(newTag);
                         }))
                 .collect(Collectors.toList());
     }
@@ -92,6 +97,20 @@ public class PostService {
         }
         return posts;
     }
+
+    public void updatePost(Long postId, Post updatedPost) {
+        Post post = getPostById(postId);
+        post.setTitle(updatedPost.getTitle());
+        post.setContent(updatedPost.getContent());
+//        post.setTags(updatedPost.getTags());
+        post.setPublished(updatedPost.getPublished());
+        post.setStatus(updatedPost.isStatus());
+        if (updatedPost.getImages() != null && !updatedPost.getImages().isEmpty()) {
+            post.setImages(updatedPost.getImages());
+        }
+        postRepository.save(post);
+    }
+
 
 //    public List<Post> getUserSeenPosts(User user) {
 //        List<History> histories = historyRepository.findHistoriesByUser(user);

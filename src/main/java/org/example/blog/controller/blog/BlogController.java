@@ -9,6 +9,7 @@ import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.user.User;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.service.blog.BlogService;
+import org.example.blog.service.post.LikeService;
 import org.example.blog.service.post.PostService;
 import org.example.blog.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,14 @@ public class BlogController {
     private final BlogService blogService;
     private final PostService postService;
     private final JwtTokenizer jwtTokenizer;
+    private final LikeService likeService;
 
     @GetMapping()
     public String showMainPage(HttpServletRequest request,Model model){
         List<Post> posts = postService.getAllPostByPublished(PublishedType.PUBLISHED);
         Long id = userService.getUserIdFromCookie(request);
         User user = userService.findUserById(id);
+
         model.addAttribute("posts", posts);
         model.addAttribute("user", user);
         model.addAttribute("blog", blogService.findBlogByUserId(id));

@@ -2,14 +2,14 @@ package org.example.blog.service.user;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.user.Role;
 import org.example.blog.domain.user.User;
 import org.example.blog.domain.user.UserRoleType;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
-import org.example.blog.repository.user.RoleRepository;
 import org.example.blog.repository.user.UserRepository;
+import org.example.blog.service.user.userInterface.RoleInterface;
+import org.example.blog.service.user.userInterface.UserInterface;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,9 +19,9 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserInterface {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleInterface roleService;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenizer jwtTokenizer;
 
@@ -49,7 +49,7 @@ public class UserService {
 
     @Transactional
     public void roleToUser(User user, UserRoleType roleType) {
-        Role role = roleRepository.findByRoleType(roleType);
+        Role role = roleService.getRoleByRoleType(roleType);
         Set<Role> set = new HashSet<>();
         set.add(role);
         if (role != null) {
@@ -59,6 +59,7 @@ public class UserService {
     }
 
     @Transactional
+    @Override
     public Long getUserIdFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -72,12 +73,9 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
-    }
-
-    public User saveUser(User user) {
-        return userRepository.save(user);
     }
 
     public User findByUsername(String username) {
@@ -92,7 +90,5 @@ public class UserService {
         return userRepository.findByUsername(name) != null;
     }
 
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+
 }

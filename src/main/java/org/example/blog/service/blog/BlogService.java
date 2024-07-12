@@ -7,6 +7,9 @@ import org.example.blog.domain.user.User;
 import org.example.blog.repository.blog.BlogRepository;
 import org.example.blog.repository.post.PostRepository;
 import org.example.blog.repository.user.UserRepository;
+import org.example.blog.service.blog.blogInterface.BlogInterface;
+import org.example.blog.service.post.PostService;
+import org.example.blog.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,14 +18,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class BlogService {
+public class BlogService implements BlogInterface {
     private final BlogRepository blogRepository;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
+    private final UserService userService;
+    private final PostService postService;
 
     @Transactional
     public Long createBlog(String title, Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userService.findUserById(userId);
         if (user == null) {
             throw new IllegalStateException("사용자를 찾을 수 없습니다.");
         }
@@ -65,7 +68,7 @@ public class BlogService {
     }
 
     public Blog getBlogByPostId(Long postId) {
-        Post post = postRepository.findByPostId(postId);
+        Post post = postService.getPostById(postId);
         if (post != null) {
             return post.getBlog();
         }

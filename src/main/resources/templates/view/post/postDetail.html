@@ -18,16 +18,17 @@
                 <img th:src="@{{fileName}(fileName=${image.filePath})}" alt="이미지">
             </div>
         </div>
-        <p th:text="${post.content}">게시글 내용</p>
+        <h2 th:text="${post.content}">게시글 내용</h2>
     </div>
-    <h1 th:text="${post.view}">조회수</h1>
-
+    <p th:text="'조회수 : '+${post.view}">조회수</p>
+    <p th:text="${likes}+' likes'"></p>
     <div th:if="${userId != 0 && userId != post.blog.user.id}">
         <input type="checkbox" id="likeCheckbox" name="like" class="like-checkbox" th:checked="${likedByCurrentUser}">
         <label for="likeCheckbox" class="like-label">&#x2764;</label>
     </div>
 
-    <button onclick="goBack()">이전 화면으로 돌아가기</button>
+    <button onclick="goBack()">돌아가기</button>
+    <h><a th:href="@{/posts/update/{id}(id=${post.postId})}" method="post">수정</a></h>
     <form th:action="@{/posts/delete/{id}(id=${post.postId})}" method="post" style="display:inline;">
         <button type="submit" onclick="return confirm('정말로 이 게시물을 삭제하시겠습니까?')">게시물 삭제</button>
     </form>
@@ -63,7 +64,6 @@
 
     document.getElementById('likeCheckbox').addEventListener('change', function() {
         var checked = this.checked;
-        console.log(checked);
         fetch(`/posts/like/${[[${post.postId}]]}?like=${checked}`, {
             method: 'POST'
         })
@@ -76,5 +76,7 @@
             })
             .catch(error => console.error('요청 중 오류 발생:', error));
     });
+
+
 </script>
 </html>

@@ -28,6 +28,11 @@
                     </div>
                     <div class="post-title">
                         <h2 th:text="${post.title}">제목</h2>
+                        <div class="post-sub">
+                            <p th:text="${post.likes.size()}+' likes'">좋아요 수</p>
+                            <p th:text="${post.view}+' views'">조회수</p>
+                        </div>
+
                     </div>
                 </a>
             </div>

@@ -1,9 +1,7 @@
 package org.example.blog.service.user;
 
 import lombok.RequiredArgsConstructor;
-import org.example.blog.domain.post.Post;
 import org.example.blog.domain.user.History;
-import org.example.blog.domain.user.User;
 import org.example.blog.repository.user.HistoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +10,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class HistoryService {
+public class HistoryService{
     private final HistoryRepository historyRepository;
 
     public List<History> getHistoriesByUserIdByViewDayAsc(Long userId) {
