@@ -90,5 +90,10 @@ public class UserService implements UserInterface {
         return userRepository.findByUsername(name) != null;
     }
 
+    @Transactional
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
+
 
 }
