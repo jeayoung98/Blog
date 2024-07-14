@@ -126,7 +126,7 @@ public class PostController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deletePost(@PathVariable("id") Long postId,HttpServletRequest request) {
         Long blogId = postService.getBlogByPostId(postId).getBlogId();
         Cookie[] cookies = request.getCookies();
