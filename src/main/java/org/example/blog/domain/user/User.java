@@ -48,6 +48,9 @@ public class User {
         creationDate = new Date();
     }
 
+    @OneToOne(mappedBy="user",cascade = CascadeType.ALL)
+    private Blog blog;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
@@ -56,10 +59,10 @@ public class User {
     )
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Like> likes = new HashSet<>();
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<History> histories;
 
 
