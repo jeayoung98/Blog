@@ -27,7 +27,8 @@
             <input type="email" id="email" name="email" th:value="${user.email}" required>
 
             <label for="emailNotifications">이메일 수신 여부:</label>
-            <input type="checkbox" id="emailNotifications" name="emailNotifications" th:checked="${user.emailStatus}">
+            <input type="hidden" name="emailNotifications" value="false" />
+            <input type="checkbox" id="emailNotifications" name="emailNotifications" th:checked="${user.emailStatus}" value="true">
 
             <label for="blogName">블로그 이름:</label>
             <input type="text" id="blogName" name="blogName" th:value="${blog.title}" required>
@@ -35,7 +36,7 @@
         <div class="button-section">
             <button type="submit">저장</button>
             <button type="button" onclick="cancelEdit()">취소</button>
-            <button type="button" onclick="withdrawl()">회원 탈퇴</button>
+            <button type="button" onclick="withdrawal()">회원 탈퇴</button>
         </div>
     </form>
 </div>
@@ -52,6 +53,18 @@
 
     function cancelEdit() {
         window.location.href = '/blogs';
+    }
+
+    function withdrawal() {
+        fetch(`/withdrawal`, {
+            method: 'POST'
+        })
+            .then(response => {
+                if (response.ok) {
+                } else {
+                    console.error();
+                }
+            })
     }
 </script>
 </html>
