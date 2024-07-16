@@ -84,7 +84,7 @@ public class UserController {
     public String showMyPage(Model model, HttpServletRequest request) {
         User user = userService.findUserById(userService.getUserIdFromCookie(request));
         if (user == null) {
-            return "redirect:/login";
+            return "redirect:/loginform";
         }
         Blog blog = blogService.findBlogByUserId(user.getId());
         model.addAttribute("user", user);
@@ -104,7 +104,7 @@ public class UserController {
 
         User user = userService.findUserById(userService.getUserIdFromCookie(request));
         if (user == null) {
-            return "redirect:/login";
+            return "redirect:/loginform";
         }
 
         try {

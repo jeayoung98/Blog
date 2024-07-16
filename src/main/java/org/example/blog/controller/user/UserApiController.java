@@ -1,6 +1,7 @@
 package org.example.blog.controller.user;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,10 +92,6 @@ public class UserApiController {
         response.addCookie(refreshTokenCookie);
 
         return new ResponseEntity(loginResponseDto, HttpStatus.OK);
-    }
-    @GetMapping("/authtest")
-    public String authTest(){
-        return "authTest";
     }
 
 }

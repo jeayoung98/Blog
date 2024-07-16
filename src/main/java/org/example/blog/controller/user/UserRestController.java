@@ -29,15 +29,13 @@ public class UserRestController {
         return ResponseEntity.ok(Map.of("exists", exists));
     }
 
-    @DeleteMapping("/withdrawal")
-    public ResponseEntity<String> withdrawal(HttpServletRequest request) {
-        Long userId = userService.getUserIdFromCookie(request);
+    @DeleteMapping("/users/delete/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("userId") Long userId) {
         try {
-//            blogService.deleteBlog(userId);
             userService.deleteUser(userId);
-            return ResponseEntity.ok("회원탈퇴가 성공적으로 완료되었습니다.");
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원탈퇴 중 오류가 발생했습니다.");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
