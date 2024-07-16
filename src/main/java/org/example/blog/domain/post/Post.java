@@ -59,7 +59,7 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<History> histories;
 
 }
