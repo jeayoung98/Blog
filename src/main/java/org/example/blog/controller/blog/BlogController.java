@@ -1,18 +1,15 @@
 package org.example.blog.controller.blog;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.post.PublishedType;
 import org.example.blog.domain.user.User;
-import org.example.blog.jwt.jwtUtil.JwtTokenizer;
 import org.example.blog.service.blog.BlogService;
-import org.example.blog.service.post.LikeService;
 import org.example.blog.service.post.PostService;
 import org.example.blog.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.blog.service.user.userInterface.FollowInterface;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +24,7 @@ public class BlogController {
     private final UserService userService;
     private final BlogService blogService;
     private final PostService postService;
+    private final FollowInterface followService;
 
     @GetMapping()
     public String showMainPage(HttpServletRequest request,Model model){
@@ -74,9 +72,21 @@ public class BlogController {
                               Model model,
                               HttpServletRequest request,
                               RedirectAttributes redirectAttributes) {
-        Long userId = userService.getUserIdFromCookie(request); // 쿠키
+        System.out.println("블로그 페이지 요청 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        Long currentUserId = userService.getUserIdFromCookie(request); // 쿠키
         Long blogId = null;
-        model.addAttribute("user", userService.findUserById(userId));
+        Long userId = userService.findUserById(blogService.getBlogById(id).getUser().getId()).getId();
+        User user = userService.findUserById(userId);
+        User currentUser = userService.findUserById(currentUserId);
+        List<User> follower = followService.getFollowsByFollower(user);
+        List<User> following = followService.getFollowsByFollowing(user);
+        boolean isFollowing = followService.isFollowing(following,currentUser);
+
+        model.addAttribute("follower", follower);
+        model.addAttribute("following", following);
+        model.addAttribute("isFollowing", isFollowing);
+        model.addAttribute("user", currentUser);
+        model.addAttribute("blogOwner", user);
         if (userId != null) {
             try {
                 blogId = blogService.findBlogByUserId(userId).getBlogId();
@@ -86,10 +96,10 @@ public class BlogController {
             }
         }
 
-        if (blogId == null || !blogId.equals(id) || userId == null) {
-            model.addAttribute("error", "권한이 없습니다.");
-            return "/view/error";
-        }
+//        if (blogId == null || !blogId.equals(id) || currentUserId == null) {
+//            model.addAttribute("error", "권한이 없습니다.");
+//            return "/view/error";
+//        }
         Blog blog = blogService.findBlogByUserId(userId);
         if (blog != null) {
             blogService.sortedPosts(blogId);
