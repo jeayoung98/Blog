@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface FollowRepository extends JpaRepository<Follow,Long> {
     List<Follow> findFollowsByFollower(User user);
     List<Follow> findFollowsByFollowing(User user);
-    Follow findByFollowerAndFollowing(User user, User currentUser);
-    void deleteByFollowId(Optional<Follow> followId);
+    Follow findByFollowerIdAndFollowingId(Long userId,Long currentUserId);
+    void deleteByFollowId(Long followId);
 }

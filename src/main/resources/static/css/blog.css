@@ -55,7 +55,7 @@ header h1 a.highlight {
 
 .post-title {
     padding: 10px;
-    text-align: center;
+    text-align: left;
     background-color: #fff;
 }
 
@@ -73,6 +73,7 @@ header h1 a.highlight {
 
 h2, p, a {
     text-decoration: none;
+    color: inherit; /* 링크 색상을 상속받아 일관성 유지 */
 }
 
 .title {
@@ -146,3 +147,7 @@ p {
     background-color: #0056b3;
 }
 
+a:hover {
+    text-decoration: underline;
+    color: black;
+}

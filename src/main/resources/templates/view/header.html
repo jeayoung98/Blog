@@ -15,9 +15,9 @@
         <img th:if="${user !=null and user.profileImage != '/upload/null'}" th:src="@{|${user.profileImage}|}" alt="이미지 로딩중" class="profile-pic">
         <img th:if="${user !=null && user.profileImage == '/upload/null'}" src="/images/hi.png" alt="이미지 없음" class="profile-pic">
         <div class="dropdown-content" id="dropdown-content">
-            <a th:href="@{/blogs/{id} (id=${blog != null ? blog.blogId : 0})}">내 블로그</a>
+            <a th:href="@{/blogs/{id} (id=${blog != null ? user.blog.blogId : 0})}">내 블로그</a>
             <a href="/posts/new">새 글 작성</a>
-            <a th:href="@{/blogs/draft/{id} (id=${blog != null ? blog.blogId : 0})}">임시글 목록</a>
+            <a th:href="@{/blogs/draft/{id} (id=${blog != null ? user.blog.blogId : 0})}">임시글 목록</a>
             <a th:href="@{/history/like/{id} (id=${user != null ? user.id : 0})}">활동 기록</a>
             <a href="/mypage">마이페이지</a>
             <a href="/logout">로그아웃</a>

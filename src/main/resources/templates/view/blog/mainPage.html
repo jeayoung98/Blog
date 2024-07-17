@@ -29,7 +29,8 @@
                     <div class="post-title">
                         <h2 class="title" th:text="${post.title}">제목</h2>
                         <div class="user-name">
-                            <p th:text="${'by '+ post.blog.user.name}">Username</p>
+                            <!-- 사용자 이름을 클릭하면 해당 사용자의 블로그 페이지로 이동 -->
+                            <a th:href="@{/blogs/{id}(id=${post.blog.blogId})}" th:text="${'by '+ post.blog.user.name}">Username</a>
                         </div>
                         <div class="post-sub">
                             <p th:text="${post.likes.size()}+' likes'">좋아요 수</p>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -78,8 +79,8 @@ public class BlogController {
         Long userId = userService.findUserById(blogService.getBlogById(id).getUser().getId()).getId();
         User user = userService.findUserById(userId);
         User currentUser = userService.findUserById(currentUserId);
-        List<User> follower = followService.getFollowsByFollower(user);
-        List<User> following = followService.getFollowsByFollowing(user);
+        Set<User> following = followService.getFollowsByFollower(user);
+        Set<User> follower = followService.getFollowsByFollowing(user);
         boolean isFollowing = followService.isFollowing(following,currentUser);
 
         model.addAttribute("follower", follower);
@@ -96,10 +97,6 @@ public class BlogController {
             }
         }
 
-//        if (blogId == null || !blogId.equals(id) || currentUserId == null) {
-//            model.addAttribute("error", "권한이 없습니다.");
-//            return "/view/error";
-//        }
         Blog blog = blogService.findBlogByUserId(userId);
         if (blog != null) {
             blogService.sortedPosts(blogId);

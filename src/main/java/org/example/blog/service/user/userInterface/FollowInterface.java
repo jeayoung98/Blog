@@ -9,10 +9,10 @@ import java.util.Set;
 public interface FollowInterface {
     void saveFollow(Follow follow);
     void setFollow(User user , User currentUser);
-    List<User> getFollowsByFollower(User user);
-    List<User> getFollowsByFollowing(User user);
+    Set<User> getFollowsByFollower(User user);
+    Set<User> getFollowsByFollowing(User user);
 
     Follow getFollowByFollowerAndFollowing(User user, User currentUser);
-    boolean isFollowing(List<User> following,User user);
+    boolean isFollowing(Set<User> following,User user);
 
 }

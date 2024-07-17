@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,9 +35,9 @@ public class FollowService implements FollowInterface {
         saveFollow(follow);
     }
     @Override
-    public List<User> getFollowsByFollower(User user) {
+    public Set<User> getFollowsByFollower(User user) {
         List<Follow> follower = followRepository.findFollowsByFollower(user);
-        List<User> followeeUsers = new ArrayList<>();
+        Set<User> followeeUsers = new HashSet<>();
         for (Follow follow : follower) {
             followeeUsers.add(follow.getFollowing());
         }
@@ -44,9 +45,9 @@ public class FollowService implements FollowInterface {
     }
 
     @Override
-    public List<User> getFollowsByFollowing(User user) {
+    public Set<User> getFollowsByFollowing(User user) {
         List<Follow> following = followRepository.findFollowsByFollowing(user);
-        List<User> followingUsers = new ArrayList<>();
+        Set<User> followingUsers = new HashSet<>();
         for (Follow follow : following) {
             followingUsers.add(follow.getFollower());
         }
@@ -56,16 +57,17 @@ public class FollowService implements FollowInterface {
 
     @Override
     public Follow getFollowByFollowerAndFollowing(User user, User currentUser) {
-        return followRepository.findByFollowerAndFollowing(user,currentUser);
+        return followRepository.findByFollowerIdAndFollowingId(user.getId(),currentUser.getId());
     }
 
     @Override
-    public boolean isFollowing(List<User> following,User user) {
+    public boolean isFollowing(Set<User> following,User user) {
         return following.contains(user);
     }
 
+    @Transactional
     public void deleteFollow(Follow follow) {
 
-        followRepository.deleteByFollowId(followRepository.findById(follow.getFollowId()));
+        followRepository.deleteByFollowId(followRepository.findById(follow.getFollowId()).get().getFollowId());
     }
 }

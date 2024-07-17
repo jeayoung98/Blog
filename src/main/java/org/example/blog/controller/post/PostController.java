@@ -153,6 +153,10 @@ public class PostController {
     @GetMapping("/update/{id}")
     public String showEditPostForm(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
         Post post = postService.getPostById(postId);
+        if (userService.getUserIdFromCookie(request) != post.getBlog().getUser().getId()) {
+            model.addAttribute("error", "권한이 없습니다");
+            return "/view/error";
+        }
         model.addAttribute("post", post);
         model.addAttribute("user",userService.findUserById(userService.getUserIdFromCookie(request)));
         return "/view/post/editPost";
