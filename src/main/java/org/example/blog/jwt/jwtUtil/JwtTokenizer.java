@@ -11,6 +11,7 @@ import org.example.blog.domain.user.UserRoleType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import org.springframework.security.core.AuthenticationException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -23,6 +24,7 @@ public class JwtTokenizer {
     private final byte[] refreshSecret;
 
     public static Long ACCESS_TOKEN_EXPIRE_COUNT = 30 * 60 * 1000L; //30분
+//    public static Long ACCESS_TOKEN_EXPIRE_COUNT = 30 * 60 * 10L;
     public static Long REFRESH_TOKEN_EXPIRE_COUNT = 7 * 24 * 60 * 60 * 1000L; //7일
 
     public JwtTokenizer(@Value("${jwt.secretKey}") String accessSecret, @Value("${jwt.refreshKey}") String refreshSecret){
@@ -87,16 +89,20 @@ public class JwtTokenizer {
     }
 
     public String remakeAccessToken(String refreshToken) {
-        Claims claims = parseRefreshToken(refreshToken);
-        Long userId = claims.get("userId", Long.class);
-        String email = claims.getSubject();
-        String name = claims.get("name", String.class);
-        String username = claims.get("username", String.class);
-        List<UserRoleType> roles = (List<UserRoleType>) claims.get("roles");
-        return createAccessToken(userId, email, name, username, roles);
+        try {
+            Claims claims = parseRefreshToken(refreshToken);
+            Long userId = claims.get("userId", Long.class);
+            String email = claims.getSubject();
+            String username = claims.get("username", String.class);
+            String name = claims.get("name", String.class);
+            List<UserRoleType> roles = (List<UserRoleType>) claims.get("roles");
+            return createAccessToken(userId, email, name,username, roles);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to remake access token", e);
+        }
     }
 
-    public String getRefreshToken(HttpServletRequest request) {
+    public String getRefreshTokenValue(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String refreshToken = null;
         for (Cookie cookie : cookies) {
@@ -105,5 +111,24 @@ public class JwtTokenizer {
             }
         }
         return refreshToken;
+    }
+
+    public Cookie getRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        Cookie refreshToken = null;
+        for (Cookie cookie : cookies) {
+            if ("refreshToken".equals(cookie.getName())) {
+                refreshToken = cookie;
+            }
+        }
+        return refreshToken;
+    }
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(getSigningKey(accessSecret)).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

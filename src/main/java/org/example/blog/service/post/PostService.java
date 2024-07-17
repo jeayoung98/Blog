@@ -137,8 +137,8 @@ public class PostService implements PostInterface {
     }
 
 
-//    public List<Post> getUserSeenPosts(User user) {
-//        List<History> histories = historyRepository.findHistoriesByUser(user);
+//    public List<Post> getUserSeenPosts(User currentUser) {
+//        List<History> histories = historyRepository.findHistoriesByUser(currentUser);
 //        List<Post> posts = new ArrayList<>();
 //        for (History history : histories) {
 //            posts.add(history.getHistory())

@@ -170,7 +170,7 @@ public class PostController {
                            RedirectAttributes redirectAttributes) {
         try {
             User user = userService.findUserById(userService.getUserIdFromCookie(request));
-//            Blog blog = blogService.findBlogByUserId(user.getId());
+//            Blog blog = blogService.findBlogByUserId(currentUser.getId());
 //            Post post = postService.getPostById(postId);
             // 파일 저장 처리
             List <Image> imagePaths = fileStorageService.postImagePaths(images,postId);

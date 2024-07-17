@@ -7,13 +7,30 @@
     <link rel="stylesheet" href="/css/header.css">
 </head>
 <body>
-    <!-- 헤더 파일을 포함 -->
-    <div th:replace="~{view/header :: header}"></div>
+<!-- 헤더 파일을 포함 -->
+<div th:replace="~{view/header :: header}"></div>
 
-    <div class="blog-container">
+<div class="blog-container">
     <header>
         <h1 th:text="${blog.title}">블로그 제목</h1>
     </header>
+
+    <!-- 사용자 프로필 섹션 추가 -->
+    <div class="profile-section">
+        <div class="profile-info">
+            <img th:src="@{|${blogOwner.profileImage}|}" alt="프로필 사진" class="profile-pic">
+            <div class="profile-details">
+                <h2 th:text="${blogOwner.name}">사용자 이름</h2>
+                <p>
+                    <span th:text="'팔로워 ' + ${following.size()}">팔로워 수</span> |
+                    <span th:text="'팔로잉 ' + ${follower.size()}">팔로잉 수</span>
+                </p>
+                <button class="follow-btn" th:if="${isFollowing && blog.user.id != user.id}" text="언팔로우" th:href="@{/users/follow/${blogOwner.id}}">언팔로우</button>
+                <button class="follow-btn" th:if="${!isFollowing && blog.user.id != user.id}" text="팔로우" th:href="@{/users/unfollow/${blogOwner.id}}">팔로우</button>
+            </div>
+        </div>
+    </div>
+
     <main>
         <div th:if="${blog.posts.isEmpty()}" class="empty-blog">
             <img src="/images/hi.png" alt="포스트가 없습니다.">
@@ -32,14 +49,13 @@
                             <p th:text="${post.likes.size()}+' likes'">좋아요 수</p>
                             <p th:text="${post.view}+' views'">조회수</p>
                         </div>
-
                     </div>
                 </a>
             </div>
         </div>
     </main>
 </div>
-</body>
+
 <script>
     // 공통 함수로 드롭다운 토글 기능 정의
     function toggleDropdown() {
@@ -62,4 +78,5 @@
         }
     });
 </script>
+</body>
 </html>

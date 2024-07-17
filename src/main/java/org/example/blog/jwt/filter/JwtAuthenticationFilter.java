@@ -70,8 +70,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 cookie.setMaxAge(Math.toIntExact(JwtTokenizer.ACCESS_TOKEN_EXPIRE_COUNT / 1000));
 
                 response.addCookie(cookie);
+                System.out.println("진짜했음 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
             }
-
         }
         filterChain.doFilter(request, response);
     }
@@ -99,10 +99,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return authorities;
     }
     private String getToken(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
-        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
-            return authorization.substring(7);
-        }
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -113,15 +109,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
+        String authorization = request.getHeader("Authorization");
+        if (StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
+        }
+
         return null;
     }
 
     private String remakeAccessToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            String currentRefreshToken = jwtTokenizer.getRefreshToken(request);
+            String currentRefreshToken = jwtTokenizer.getRefreshTokenValue(request);
             Optional<RefreshToken> refreshToken = refreshTokenService.findRefreshToken(currentRefreshToken);
             if (refreshToken.isPresent()) {
+                System.out.println("재발급  ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
                 return jwtTokenizer.remakeAccessToken(currentRefreshToken);
             }
         }

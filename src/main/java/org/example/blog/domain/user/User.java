@@ -14,20 +14,21 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Users")
-@Getter @Setter
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id",nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long id;
 
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "password",nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "username",nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "name", nullable = false)
@@ -48,7 +49,7 @@ public class User {
         creationDate = new Date();
     }
 
-    @OneToOne(mappedBy="user",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Blog blog;
 
     @ManyToMany(cascade = CascadeType.ALL)
@@ -60,9 +61,9 @@ public class User {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Like> likes = new HashSet<>();
+    private Set<Like> likes;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<History> histories;
 
 
