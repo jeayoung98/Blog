@@ -12,7 +12,17 @@
 
 <div class="blog-container">
     <header>
-        <h1 th:text="${blog.title}">블로그 제목</h1>
+        <h1 th:text="${blog.title}" class="blog-title">블로그 제목</h1>
+        <div class="dropdown">
+            <button class="toggle-button">보기 옵션</button>
+            <div class="dropdown-content1" style="display:none;">
+                <a href="/tags">태그별 보기</a>
+                <a href="/series">시리즈별 보기</a>
+                <a href="/?sort=newest">최신순 보기</a>
+                <a href="/?sort=views">조회순 보기</a>
+                <a href="/?sort=likes">좋아순 보기</a>
+            </div>
+        </div>
     </header>
 
     <!-- 사용자 프로필 섹션 추가 -->
@@ -67,6 +77,7 @@
     // profile-pic에 클릭 이벤트 리스너 추가
     var profilePics = document.querySelectorAll('.profile-pic');
     profilePics.forEach(function(pic) {
+        console.log('눌림ㅋ')
         pic.addEventListener('click', toggleDropdown);
     });
 
@@ -102,6 +113,24 @@
                 }).catch(error => console.error('Error:', error));
             });
         });
+    });
+</script>
+<script>
+    document.querySelector('.toggle-button').addEventListener('click', function(event) {
+        event.stopPropagation(); // 이벤트 버블링 방지
+        var dropdownContent = this.nextElementSibling;
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // 외부 클릭 감지하여 드롭다운 닫기
+    window.addEventListener('click', function() {
+        var dropdowns = document.querySelectorAll('.dropdown-content1');
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display === 'block') {
+                openDropdown.style.display = 'none';
+            }
+        }
     });
 </script>
 </body>
