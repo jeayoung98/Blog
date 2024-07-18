@@ -13,6 +13,14 @@
 <div class="blog-container">
     <header>
         <h1>Blog 메인</h1>
+        <div class="dropdown">
+            <button class="toggle-button">보기 옵션</button>
+            <div class="dropdown-content1" style="display:none;">
+                <a href="/blogs/sort/date">최신순 보기</a>
+                <a href="/blogs/sort/views">조회순 보기</a>
+                <a href="/blogs/sort/likes">좋아순 보기</a>
+            </div>
+        </div>
     </header>
     <main>
         <div th:if="${allPosts.isEmpty()}" class="empty-blog">
@@ -63,6 +71,25 @@
         if (!isClickInside) {
             var dropdown = document.getElementById('dropdown-content');
             dropdown.style.display = 'none';
+        }
+    });
+</script>
+
+<script>
+    document.querySelector('.toggle-button').addEventListener('click', function(event) {
+        event.stopPropagation(); // 이벤트 버블링 방지
+        var dropdownContent = this.nextElementSibling;
+        dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+    });
+
+    // 외부 클릭 감지하여 드롭다운 닫기
+    window.addEventListener('click', function() {
+        var dropdowns = document.querySelectorAll('.dropdown-content1');
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.style.display === 'block') {
+                openDropdown.style.display = 'none';
+            }
         }
     });
 </script>
