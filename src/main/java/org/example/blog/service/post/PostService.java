@@ -179,6 +179,24 @@ public class PostService implements PostInterface {
         return posts;
     }
 
+    public List<Post> getAllOrderByTime() {
+        List<Post> posts = postRepository.findAllByPublished(PublishedType.PUBLISHED);
+        Collections.sort(posts, (post1, post2) -> Long.compare(post2.getPostId(), post1.getPostId()));
+        return posts;
+    }
+
+    public List<Post> getAllOrderByLikes() {
+        List<Post> posts = postRepository.findAllByPublished(PublishedType.PUBLISHED);
+        Collections.sort(posts, (post1, post2) -> Integer.compare(post2.getLikes().size(), post1.getLikes().size()));
+        return posts;
+    }
+
+    public List<Post> getAllOrderByViews() {
+        List<Post> posts = postRepository.findAllByPublished(PublishedType.PUBLISHED);
+        Collections.sort(posts, (post1, post2) -> Integer.compare(post2.getView(), post1.getView()));
+        return posts;
+    }
+
 
 //    public List<Post> getUserSeenPosts(User currentUser) {
 //        List<History> histories = historyRepository.findHistoriesByUser(currentUser);

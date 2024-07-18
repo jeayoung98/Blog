@@ -128,7 +128,7 @@ public class BlogController {
     @GetMapping("/sort/date/{id}")
     public String recentPosts(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
         Blog blog = blogService.getBlogById(blogId);
-        List<Post> posts = postService.getAllPosts(PublishedType.PUBLISHED, true);
+        List<Post> posts = postService.getPostsOrderByTime(blog);
         Long userId = userService.getUserIdFromCookie(request);
         User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
         Set<User> following = followService.getFollowsByFollower(blogOwner);
@@ -219,8 +219,47 @@ public class BlogController {
     }
 
     @GetMapping("/sort/date")
-    public String allPostSortedByDate() {
+    public String allPostSortedByDate(Model model, HttpServletRequest request) {
 
+        List<Post> posts = postService.getAllOrderByTime();
+        Long userId = userService.getUserIdFromCookie(request);
+
+        User user = userService.findUserById(userId);
+        Blog blog = blogService.getBlogById(user.getBlog().getBlogId());
+
+        model.addAttribute("user", user);
+        model.addAttribute("allPosts", posts);
+        model.addAttribute("blog", blog);
+
+        return "/view/blog/mainPage";
+    }
+
+    @GetMapping("/sort/likes")
+    public String allPostSortedByLikes(Model model, HttpServletRequest request) {
+        List<Post> posts = postService.getAllOrderByLikes();
+        Long userId = userService.getUserIdFromCookie(request);
+
+        User user = userService.findUserById(userId);
+        Blog blog = blogService.getBlogById(user.getBlog().getBlogId());
+
+        model.addAttribute("user", user);
+        model.addAttribute("allPosts", posts);
+        model.addAttribute("blog", blog);
+        return "/view/blog/mainPage";
+    }
+
+    @GetMapping("/sort/views")
+    public String allPostSortedByViews(Model model, HttpServletRequest request) {
+        List<Post> posts = postService.getAllOrderByViews();
+        Long userId = userService.getUserIdFromCookie(request);
+
+        User user = userService.findUserById(userId);
+        Blog blog = blogService.getBlogById(user.getBlog().getBlogId());
+
+        model.addAttribute("user", user);
+        model.addAttribute("allPosts", posts);
+        model.addAttribute("blog", blog);
+        return "/view/blog/mainPage";
     }
 
 //    @GetMapping("/tags/{id}")
