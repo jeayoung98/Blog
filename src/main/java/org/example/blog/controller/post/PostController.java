@@ -55,8 +55,12 @@ public class PostController {
         if (seriesService.getSeriesByBlogId(blog.getBlogId()) != null) {
             allSeries = seriesService.getSeriesByBlogId(blog.getBlogId());
         }
+        Set<String> seriesTitle = new HashSet<>();
+        for (Series series : allSeries) {
+            seriesTitle.add(series.getTitle());
+        }
 
-        model.addAttribute("allSeries", allSeries);
+        model.addAttribute("seriesTitle", seriesTitle);
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/login";
@@ -73,7 +77,6 @@ public class PostController {
     @PostMapping("/create")
     public String createPost(@RequestParam("title") String title,
                              @RequestParam("content") String content,
-                             @RequestParam("tags") String tags,
                              @RequestParam("image") MultipartFile[] images,
                              @RequestParam(value = "published", required = false) String published,
                              @RequestParam(value = "status", required = false) String status,
@@ -101,7 +104,7 @@ public class PostController {
             PublishedType draft = published != null ? PublishedType.DRAFT : PublishedType.PUBLISHED;
             boolean isPublic = status != null;
             // 게시물 생성 처리
-            postService.createPost(blog, title, content, tags, imagePaths, draft, isPublic, series, newSeriesName);
+            postService.createPost(blog, title, content, imagePaths, draft, isPublic, series, newSeriesName);
 
             return "redirect:/blogs/" + blogService.findBlogByUserId(user.getId()).getBlogId();
         } catch (Exception e) {
@@ -173,8 +176,16 @@ public class PostController {
         }
         model.addAttribute("post", post);
         model.addAttribute("user",userService.findUserById(userService.getUserIdFromCookie(request)));
-        Set<Series> allSeries = seriesService.getSeriesByBlogId(post.getBlog().getBlogId());
-        model.addAttribute("allSeries", allSeries);
+        Set<Series> allSeries = new HashSet<>();
+        if (seriesService.getSeriesByBlogId(post.getBlog().getBlogId()) != null) {
+            allSeries = seriesService.getSeriesByBlogId(post.getBlog().getBlogId());
+        }
+        Set<String> seriesTitle = new HashSet<>();
+        for (Series series : allSeries) {
+            seriesTitle.add(series.getTitle());
+        }
+
+        model.addAttribute("seriesTitle", seriesTitle);
         return "/view/post/editPost";
     }
 
@@ -182,7 +193,6 @@ public class PostController {
     public String editPost(@PathVariable("id") Long postId,
                            @RequestParam("title") String title,
                            @RequestParam("content") String content,
-                           @RequestParam("tags") String tags,
                            @RequestParam("image") MultipartFile[] images,
                            @RequestParam(value = "published", required = false) String published,
                            @RequestParam(value = "status", required = false) String status,
@@ -192,14 +202,13 @@ public class PostController {
                            RedirectAttributes redirectAttributes) {
         try {
             User user = userService.findUserById(userService.getUserIdFromCookie(request));
-//            Blog blog = blogService.findBlogByUserId(currentUser.getId());
-//            Post post = postService.getPostById(postId);
+
             // 파일 저장 처리
             List <Image> imagePaths = fileStorageService.postImagePaths(images,postId);
             PublishedType draft = published.equals("on,true") ? PublishedType.DRAFT : PublishedType.PUBLISHED;
             boolean isPublic = !status.equals("false");
             // 게시물 생성 처리
-            postService.updatePost(postId, title, content, tags, imagePaths, draft, isPublic,series,newSeriesName);
+            postService.updatePost(postId, title, content, imagePaths, draft, isPublic,series,newSeriesName);
 
             return "redirect:/blogs/" + blogService.findBlogByUserId(user.getId()).getBlogId();
         } catch (Exception e) {

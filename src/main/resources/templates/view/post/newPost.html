@@ -18,16 +18,13 @@
         <label for="content">내용:</label>
         <textarea id="content" name="content" required></textarea>
 
-        <label for="tags">태그 (쉼표로 구분):</label>
-        <input type="text" id="tags" name="tags">
-
         <label for="images">이미지 업로드:</label>
         <input type="file" id="images" name="image" multiple>
 
         <label for="series">시리즈:</label>
         <select id="series" name="series" onchange="checkNewSeriesOption(this);">
             <option value="">기존 시리즈 선택...</option>
-            <option th:each="series : ${allSeries}" th:value="${series.seriesId}" th:text="${series.title}"></option>
+            <option th:each="title : ${seriesTitle}" th:value="${title}" th:text="${title}"></option>
             <option value="new" >새 시리즈...</option>
         </select>
 

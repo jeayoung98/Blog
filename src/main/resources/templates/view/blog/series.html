@@ -12,26 +12,7 @@
 
 <div class="blog-container">
     <header>
-
-        <!-- 사용자 프로필 섹션 추가 -->
-        <div class="profile-section">
-            <div class="profile-info">
-                <img th:if="${blogOwner.profileImage != '/upload/null'}" th:src="@{|${blogOwner.profileImage}|}" alt="프로필 사진" class="profile-pic">
-                <img th:if="${blogOwner.profileImage == '/upload/null'}" src="/images/hi.png" alt="이미지 없음" class="profile-pic">
-                <div class="profile-details">
-                    <h2 th:text="${blogOwner.name}">사용자 이름</h2>
-                    <p>
-                        <span th:text="'팔로워 ' + ${following.size()}">팔로워 수</span> |
-                        <span th:text="'팔로잉 ' + ${follower.size()}">팔로잉 수</span>
-                    </p>
-                    <button th:if="${!isFollowing && blog.user.id != user.id}" th:attr="data-action='follow', data-user-id=${blogOwner.id}" class="follow-btn">팔로우</button>
-                    <button th:if="${isFollowing && blog.user.id != user.id}" th:attr="data-action='unfollow', data-user-id=${blogOwner.id}" class="follow-btn">언팔로우</button>
-                </div>
-            </div>
-        </div>
-
-        <h1 th:text="${blog.title}" class="blog-title">블로그 제목</h1>
-
+        <h1 th:text="${blog.title}+' 시리즈'" class="blog-title">블로그 제목</h1>
         <div class="dropdown">
             <button class="toggle-button">보기 옵션</button>
             <div class="dropdown-content1" style="display:none;">
@@ -44,24 +25,40 @@
         </div>
     </header>
 
+    <!-- 사용자 프로필 섹션 추가 -->
+    <div class="profile-section">
+        <div class="profile-info">
+            <img th:if="${blogOwner.profileImage != '/upload/null'}" th:src="@{|${blogOwner.profileImage}|}" alt="프로필 사진" class="profile-pic">
+            <img th:if="${blogOwner.profileImage == '/upload/null'}" src="/images/hi.png" alt="이미지 없음" class="profile-pic">
+            <div class="profile-details">
+                <h2 th:text="${blogOwner.name}">사용자 이름</h2>
+                <p>
+                    <span th:text="'팔로워 ' + ${following.size()}">팔로워 수</span> |
+                    <span th:text="'팔로잉 ' + ${follower.size()}">팔로잉 수</span>
+                </p>
+                <button th:if="${!isFollowing && blog.user.id != user.id}" th:attr="data-action='follow', data-user-id=${blogOwner.id}" class="follow-btn">팔로우</button>
+                <button th:if="${isFollowing && blog.user.id != user.id}" th:attr="data-action='unfollow', data-user-id=${blogOwner.id}" class="follow-btn">언팔로우</button>
+            </div>
+        </div>
+    </div>
 
     <main>
-        <div th:if="${posts.isEmpty()}" class="empty-blog">
-            <img src="/images/hi.png" alt="포스트가 없습니다.">
+        <div th:if="${allSeries.isEmpty()}" class="empty-blog">
+            <img src="/images/hi.png" alt="시리즈가 없습니다.">
             <p>포스트가 없습니다.</p>
         </div>
-        <div th:unless="${posts.isEmpty()}" class="post-list">
-            <div th:each="post : ${posts}" class="post-preview">
-                <a th:href="@{/posts/{id}(id=${post.postId})}">
+        <div th:unless="${allSeries.isEmpty()}" class="post-list">
+            <div th:each="title : ${allSeries}" class="post-preview">
+<!--                여기를 시리즈 별로 볼 수 있도록 바꾸기-->
+                <a th:href="@{/blogs/series/{blogId}/${__${title}__}(blogId=${blogOwner.id})}">
                     <div class="post-image">
-                        <img th:if="${post.images[0].filePath != null}" th:src="@{|${post.images[0].filePath}|}" alt="이미지 로딩중 ">
-                        <img th:unless="${post.images[0].filePath != null}" src="https://via.placeholder.com/300" alt="이미지 없음">
+                        <img src="/images/hi.png" alt="이미지 없음">
                     </div>
                     <div class="post-title">
-                        <h2 th:text="${post.title}">제목</h2>
+                        <h2 th:text="${title}">제목</h2>
                         <div class="post-sub">
-                            <p th:text="${post.likes.size()}+' likes'">좋아요 수</p>
-                            <p th:text="${post.view}+' views'">조회수</p>
+                            <p th:text="${likes.get(title)}+' total likes'">좋아요 수</p>
+                            <p th:text="${views.get(title)}+' total views'">조회수</p>
                         </div>
                     </div>
                 </a>

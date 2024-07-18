@@ -29,14 +29,13 @@ public class PostService implements PostInterface {
 
 
     @Transactional
-    public void createPost(Blog blog, String title, String content, String tags,
+    public void createPost(Blog blog, String title, String content,
                            List<Image> images, PublishedType published,boolean status,String series,String newSeries) {
         Post post = new Post();
         post.setBlog(blog);
         post.setTitle(title);
 
         post.setContent(content);
-        post.setTags(parseTags(tags));
         post.setPublished(published);
         post.setStatus(status);
         for (Image image : images) {
@@ -53,7 +52,7 @@ public class PostService implements PostInterface {
                 Series noTitleSeries = seriesService.createSeries(blog, post, null);
                 post.setSeries(noTitleSeries);
             } else {
-                Series existingSeries = seriesService.createSeries(blog, post, seriesService.getSeriesById(Long.parseLong(series)).getTitle());
+                Series existingSeries = seriesService.createSeries(blog, post, series);
                 post.setSeries(existingSeries);
             }
         }
@@ -128,7 +127,7 @@ public class PostService implements PostInterface {
 
 
 
-    public void updatePost(Long postId,String title, String content, String tags, List<Image> images,
+    public void updatePost(Long postId,String title, String content, List<Image> images,
                            PublishedType published,boolean status,String series,String newSeries) {
         Post post = getPostById(postId);
         post.setTitle(title);
@@ -146,7 +145,7 @@ public class PostService implements PostInterface {
                 Series noTitleSeries = seriesService.updateSeries(post.getBlog(), post, null);
                 post.setSeries(noTitleSeries);
             } else {
-                Series existingSeries = seriesService.updateSeries(post.getBlog(), post, seriesService.getSeriesById(Long.parseLong(series)).getTitle());
+                Series existingSeries = seriesService.updateSeries(post.getBlog(), post, series);
                 post.setSeries(existingSeries);
             }
         }

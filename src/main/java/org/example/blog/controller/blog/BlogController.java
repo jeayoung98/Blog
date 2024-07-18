@@ -17,9 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -192,31 +190,6 @@ public class BlogController {
         return "/view/blog/blog";
     }
 
-    @GetMapping("/series/{id}")
-    public String filterBySeries(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
-        Long userId = userService.getUserIdFromCookie(request);
-        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
-        Blog blog = blogService.getBlogById(blogId);
-        Set<Series> allSeries = seriesService.getSeriesByBlogId(blogId);
-        List<Post> posts = new ArrayList<>();
-        for (Series series : allSeries) {
-            posts.add(series.getPost());
-        }
-        Set<User> following = followService.getFollowsByFollower(blogOwner);
-        Set<User> follower = followService.getFollowsByFollowing(blogOwner);
-        User user = userService.findUserById(userId);
-        boolean isFollowing = followService.isFollowing(following, user);
-
-        model.addAttribute("follower", follower);
-        model.addAttribute("following", following);
-        model.addAttribute("isFollowing", isFollowing);
-
-        model.addAttribute("user", user);
-        model.addAttribute("posts", posts);
-        model.addAttribute("blog", blog);
-        model.addAttribute("blogOwner", blogOwner);
-        return "/view/blog/blog";
-    }
 
     @GetMapping("/sort/date")
     public String allPostSortedByDate(Model model, HttpServletRequest request) {
@@ -262,17 +235,70 @@ public class BlogController {
         return "/view/blog/mainPage";
     }
 
-//    @GetMapping("/tags/{id}")
-//    public String filterByTags(@PathVariable(name = "id") Long blogId,Model model,HttpServletRequest request) {
-//        Long userId = userService.getUserIdFromCookie(request);
-//        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
-//        Blog blog = blogService.getBlogById(blogId);
-//        List<Post> posts = postService.;
-//        model.addAttribute("user", userService.findUserById(userId));
-//        model.addAttribute("posts", posts);
-//        model.addAttribute("blog", blog);
-//        model.addAttribute("blogOwner", blogOwner);
-//
-//        return "/view/blog/blog";
-//    }
+    @GetMapping("/series/{blogId}")
+    public String allSeries(Model model, HttpServletRequest request, @PathVariable("blogId") Long blogId) {
+        Set<Series> series = seriesService.getSeriesByBlogId(blogId);
+        Set<String> titles = new HashSet<>();
+        for (Series series1 : series) {
+            titles.add(series1.getTitle());
+        }
+        Long userId = userService.getUserIdFromCookie(request);
+        User user = userService.findUserById(userId);
+        User blogOwner = blogService.getBlogById(blogId).getUser();
+        Set<User> following = followService.getFollowsByFollower(blogOwner);
+        Set<User> follower = followService.getFollowsByFollowing(blogOwner);
+        boolean isFollowing = followService.isFollowing(following, user);
+        Blog blog = blogService.findBlogByUserId(userId);
+
+        Map<String, Integer> likesMap = new HashMap<>();
+        Map<String, Integer> viewsMap = new HashMap<>();
+
+        for (Series series1 : series) {
+            likesMap.put(series1.getTitle(),likesMap.getOrDefault(series1.getTitle(),0)+series1.getPost().getLikes().size());
+            viewsMap.put(series1.getTitle(), viewsMap.getOrDefault(series1.getTitle(), 0) + series1.getPost().getView());
+        }
+
+
+        model.addAttribute("user", user);
+        model.addAttribute("blog", blog);
+        model.addAttribute("blogOwner", blogOwner);
+        model.addAttribute("follower", follower);
+        model.addAttribute("following", following);
+        model.addAttribute("isFollowing", isFollowing);
+        model.addAttribute("likes", likesMap);
+        model.addAttribute("views", viewsMap);
+        model.addAttribute("allSeries", titles);
+        return "/view/blog/series";
+    }
+
+    @GetMapping("/series/{blogId}/{seriesTitle}")
+    public String showSeries(@PathVariable("seriesTitle") String seriesTitle, // 여기서 인코딩해보기
+                             @PathVariable("blogId")Long blogId,
+                             HttpServletRequest request,
+                             Model model) {
+        Long userId = userService.getUserIdFromCookie(request);
+        User user = userService.findUserById(userId);
+        User blogOwner = blogService.getBlogById(blogId).getUser();
+        Set<User> following = followService.getFollowsByFollower(blogOwner);
+        Set<User> follower = followService.getFollowsByFollowing(blogOwner);
+        boolean isFollowing = followService.isFollowing(following, user);
+        Blog blog = blogService.findBlogByUserId(userId);
+        Set<Series> series = seriesService.getSeriesByBlogId(blogId);
+        Set<Series> selectedSeries = new HashSet<>();
+        for (Series series1 : series) {
+            if (series1.getTitle().equals(seriesTitle)) {
+                selectedSeries.add(series1);
+            }
+        }
+        model.addAttribute("selectedSeries", selectedSeries);
+        model.addAttribute("user", user);
+        model.addAttribute("blog", blog);
+        model.addAttribute("blogOwner", blogOwner);
+        model.addAttribute("follower", follower);
+        model.addAttribute("following", following);
+        model.addAttribute("isFollowing", isFollowing);
+        return "/view/blog/selectedSeries";
+    }
+
+
 }

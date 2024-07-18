@@ -22,6 +22,6 @@ public class Series {
     private Blog blog;
 
     @OneToOne
-    @JoinColumn(name = "post_id", nullable = true)
+    @JoinColumn(name = "post_id")
     private Post post;
 }
