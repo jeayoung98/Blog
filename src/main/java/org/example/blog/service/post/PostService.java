@@ -5,19 +5,12 @@ import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.post.*;
 import org.example.blog.domain.user.History;
-import org.example.blog.domain.user.User;
-import org.example.blog.repository.blog.BlogRepository;
 import org.example.blog.repository.post.PostRepository;
-import org.example.blog.repository.post.TagRepository;
-import org.example.blog.repository.user.HistoryRepository;
-import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.blog.blogInterface.BlogInterface;
-import org.example.blog.service.post.postInterface.LikeInterface;
 import org.example.blog.service.post.postInterface.PostInterface;
 import org.example.blog.service.post.postInterface.SeriesInterface;
 import org.example.blog.service.post.postInterface.TagInterface;
 import org.example.blog.service.user.userInterface.HistoryInterface;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,7 +85,7 @@ public class PostService implements PostInterface {
     }
 
     public List<Post> getDraftPostsByBlog(Long blogId) {
-        return postRepository.findByBlogAndPublished(blogService.getBlogById(blogId), PublishedType.DRAFT);
+        return postRepository.findByBlogAndPublishedOrderByTimeAsc(blogService.getBlogById(blogId), PublishedType.DRAFT);
     }
 
 
@@ -117,12 +110,16 @@ public class PostService implements PostInterface {
                 post.setView(post.getView() + 1);
                 savePost(post);
             } else {
+                boolean flag = false;
                 for (History currentHistory : currentUserHistories) {
-                    if (currentHistory.getPost().getPostId() != postId && !Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
-                        Post post=getPostById(postId);
-                        post.setView(post.getView() + 1);
-                        savePost(post);
+                    if (Objects.equals(currentHistory.getPost().getPostId(), postId) && Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
+                        flag = true;
                     }
+                }
+                if (!flag) {
+                    Post post=getPostById(postId);
+                    post.setView(post.getView() + 1);
+                    savePost(post);
                 }
             }
 
@@ -162,6 +159,24 @@ public class PostService implements PostInterface {
             return post.getBlog();
         }
         return null;
+    }
+
+    public List<Post> getPostsOrderByLikes(Blog blog) {
+        List<Post> posts = postRepository.findPostsByBlogAndPublished(blog,PublishedType.PUBLISHED);
+        Collections.sort(posts, (post1, post2) -> Integer.compare(post2.getLikes().size(), post1.getLikes().size()));
+        return posts;
+    }
+
+    public List<Post> getPostsOrderByTime(Blog blog) {
+        List<Post> posts = postRepository.findPostsByBlogAndPublished(blog,PublishedType.PUBLISHED);
+        Collections.sort(posts, (post1, post2) -> Long.compare(post2.getPostId(), post1.getPostId()));
+        return posts;
+    }
+
+    public List<Post> getPostsOrderByView(Blog blog) {
+        List<Post> posts = postRepository.findPostsByBlogAndPublished(blog,PublishedType.PUBLISHED);
+        Collections.sort(posts, (post1, post2) -> Integer.compare(post2.getView(), post1.getView()));
+        return posts;
     }
 
 

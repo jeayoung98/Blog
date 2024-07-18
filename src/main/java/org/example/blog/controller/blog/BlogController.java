@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.post.PublishedType;
+import org.example.blog.domain.post.Series;
 import org.example.blog.domain.user.User;
 import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.PostService;
+import org.example.blog.service.post.SeriesService;
 import org.example.blog.service.user.UserService;
 import org.example.blog.service.user.userInterface.FollowInterface;
 import org.springframework.stereotype.Controller;
@@ -15,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,9 +29,10 @@ public class BlogController {
     private final BlogService blogService;
     private final PostService postService;
     private final FollowInterface followService;
+    private final SeriesService seriesService;
 
     @GetMapping()
-    public String showMainPage(HttpServletRequest request,Model model){
+    public String showMainPage(HttpServletRequest request, Model model) {
         List<Post> posts = postService.getAllPostByPublished(PublishedType.PUBLISHED);
         Long id = userService.getUserIdFromCookie(request);
         User user = userService.findUserById(id);
@@ -78,12 +82,13 @@ public class BlogController {
         System.out.println("블로그 페이지 요청 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
         Long currentUserId = userService.getUserIdFromCookie(request); // 쿠키
         Long blogId = null;
+
         Long userId = userService.findUserById(blogService.getBlogById(id).getUser().getId()).getId();
         User user = userService.findUserById(userId);
         User currentUser = userService.findUserById(currentUserId);
         Set<User> following = followService.getFollowsByFollower(user);
         Set<User> follower = followService.getFollowsByFollowing(user);
-        boolean isFollowing = followService.isFollowing(following,currentUser);
+        boolean isFollowing = followService.isFollowing(following, currentUser);
 
         model.addAttribute("follower", follower);
         model.addAttribute("following", following);
@@ -102,7 +107,7 @@ public class BlogController {
         Blog blog = blogService.findBlogByUserId(userId);
         if (blog != null) {
             blogService.sortedPosts(blogId);
-            model.addAttribute("post", postService.getAllPostByPublished(PublishedType.PUBLISHED));
+            model.addAttribute("posts", postService.getPostsOrderByTime(blog));
             model.addAttribute("blog", blog);
             return "/view/blog/blog";
         } else {
@@ -112,11 +117,123 @@ public class BlogController {
     }
 
     @GetMapping("/draft/{id}")
-    public String showDraftPosts(@PathVariable("id") Long blogId, Model model,HttpServletRequest request) {
+    public String showDraftPosts(@PathVariable("id") Long blogId, Model model, HttpServletRequest request) {
         User user = userService.findUserById(userService.getUserIdFromCookie(request));
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         model.addAttribute("blog", blogService.getBlogById(blogId));
         model.addAttribute("posts", postService.getDraftPostsByBlog(blogId));
         return "/view/blog/draft";
     }
+
+    @GetMapping("/sort/date/{id}")
+    public String recentPosts(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
+        Blog blog = blogService.getBlogById(blogId);
+        List<Post> posts = postService.getAllPosts(PublishedType.PUBLISHED, true);
+        Long userId = userService.getUserIdFromCookie(request);
+        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
+        Set<User> following = followService.getFollowsByFollower(blogOwner);
+        Set<User> follower = followService.getFollowsByFollowing(blogOwner);
+        User user = userService.findUserById(userId);
+        boolean isFollowing = followService.isFollowing(following, user);
+
+        model.addAttribute("follower", follower);
+        model.addAttribute("following", following);
+        model.addAttribute("isFollowing", isFollowing);
+
+        model.addAttribute("user", user);
+        model.addAttribute("posts", posts);
+        model.addAttribute("blog", blog);
+        model.addAttribute("blogOwner", blogOwner);
+
+        return "/view/blog/blog";
+    }
+
+    @GetMapping("/sort/likes/{id}")
+    public String sortedByLikes(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
+        Long userId = userService.getUserIdFromCookie(request);
+        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
+        Blog blog = blogService.getBlogById(blogId);
+        List<Post> posts = postService.getPostsOrderByLikes(blog);
+        Set<User> following = followService.getFollowsByFollower(blogOwner);
+        Set<User> follower = followService.getFollowsByFollowing(blogOwner);
+        User user = userService.findUserById(userId);
+        boolean isFollowing = followService.isFollowing(following, user);
+
+        model.addAttribute("follower", follower);
+        model.addAttribute("following", following);
+        model.addAttribute("isFollowing", isFollowing);
+
+        model.addAttribute("user", user);
+        model.addAttribute("posts", posts);
+        model.addAttribute("blog", blog);
+        model.addAttribute("blogOwner", blogOwner);
+        return "/view/blog/blog";
+    }
+
+    @GetMapping("/sort/views/{id}")
+    public String sortedByViews(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
+        Long userId = userService.getUserIdFromCookie(request);
+        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
+        Blog blog = blogService.getBlogById(blogId);
+        List<Post> posts = postService.getPostsOrderByView(blog);
+        Set<User> following = followService.getFollowsByFollower(blogOwner);
+        Set<User> follower = followService.getFollowsByFollowing(blogOwner);
+        User user = userService.findUserById(userId);
+        boolean isFollowing = followService.isFollowing(following, user);
+
+        model.addAttribute("follower", follower);
+        model.addAttribute("following", following);
+        model.addAttribute("isFollowing", isFollowing);
+
+        model.addAttribute("user", user);
+        model.addAttribute("posts", posts);
+        model.addAttribute("blog", blog);
+        model.addAttribute("blogOwner", blogOwner);
+        return "/view/blog/blog";
+    }
+
+    @GetMapping("/series/{id}")
+    public String filterBySeries(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
+        Long userId = userService.getUserIdFromCookie(request);
+        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
+        Blog blog = blogService.getBlogById(blogId);
+        Set<Series> allSeries = seriesService.getSeriesByBlogId(blogId);
+        List<Post> posts = new ArrayList<>();
+        for (Series series : allSeries) {
+            posts.add(series.getPost());
+        }
+        Set<User> following = followService.getFollowsByFollower(blogOwner);
+        Set<User> follower = followService.getFollowsByFollowing(blogOwner);
+        User user = userService.findUserById(userId);
+        boolean isFollowing = followService.isFollowing(following, user);
+
+        model.addAttribute("follower", follower);
+        model.addAttribute("following", following);
+        model.addAttribute("isFollowing", isFollowing);
+
+        model.addAttribute("user", user);
+        model.addAttribute("posts", posts);
+        model.addAttribute("blog", blog);
+        model.addAttribute("blogOwner", blogOwner);
+        return "/view/blog/blog";
+    }
+
+    @GetMapping("/sort/date")
+    public String allPostSortedByDate() {
+
+    }
+
+//    @GetMapping("/tags/{id}")
+//    public String filterByTags(@PathVariable(name = "id") Long blogId,Model model,HttpServletRequest request) {
+//        Long userId = userService.getUserIdFromCookie(request);
+//        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
+//        Blog blog = blogService.getBlogById(blogId);
+//        List<Post> posts = postService.;
+//        model.addAttribute("user", userService.findUserById(userId));
+//        model.addAttribute("posts", posts);
+//        model.addAttribute("blog", blog);
+//        model.addAttribute("blogOwner", blogOwner);
+//
+//        return "/view/blog/blog";
+//    }
 }

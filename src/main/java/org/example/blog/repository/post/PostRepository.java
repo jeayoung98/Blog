@@ -17,5 +17,11 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByPublished(PublishedType published);
 //    List<Post> findAllByPublishedAndStatus(PublishedType published, boolean status);
 
-    List<Post> findByBlogAndPublished(Blog blog, PublishedType publishedType);
+    List<Post> findByBlogAndPublishedOrderByTimeAsc(Blog blog, PublishedType publishedType);
+
+    List<Post> findPostsByPublishedAndBlogOrderByLikes(PublishedType publishedType, Blog blog);
+
+    List<Post> findPostsByBlogOrderByView(Blog blog);
+
+    List<Post> findPostsByBlogAndPublished(Blog blog, PublishedType publishedType);
 }
