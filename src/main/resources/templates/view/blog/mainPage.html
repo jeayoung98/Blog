@@ -15,12 +15,12 @@
         <h1>Blog 메인</h1>
     </header>
     <main>
-        <div th:if="${posts.isEmpty()}" class="empty-blog">
+        <div th:if="${allPosts.isEmpty()}" class="empty-blog">
             <img src="/images/hi.png" alt="포스트가 없습니다.">
             <p>포스트가 없습니다.</p>
         </div>
-        <div th:unless="${posts.isEmpty()}" class="post-list">
-            <div th:each="post : ${posts}" class="post-preview">
+        <div th:unless="${allPosts.isEmpty()}" class="post-list">
+            <div th:each="post : ${allPosts}" class="post-preview">
                 <a th:if="${post.published.name() == 'PUBLISHED'}" th:href="@{/posts/{id}(id=${post.postId})}">
                     <div class="post-image">
                         <img th:if="${post.images[0].filePath != null}" th:src="@{|${post.images[0].filePath}|}" alt="이미지 로딩중 ">
