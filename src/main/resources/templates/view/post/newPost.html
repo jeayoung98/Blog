@@ -24,6 +24,18 @@
         <label for="images">이미지 업로드:</label>
         <input type="file" id="images" name="image" multiple>
 
+        <label for="series">시리즈:</label>
+        <select id="series" name="series" onchange="checkNewSeriesOption(this);">
+            <option value="">기존 시리즈 선택...</option>
+            <option th:each="series : ${allSeries}" th:value="${series.seriesId}" th:text="${series.title}"></option>
+            <option value="new" >새 시리즈...</option>
+        </select>
+
+        <div id="newSeriesContainer" style="display:none;">
+            <label for="newSeriesName">새 시리즈 이름:</label>
+            <input type="text" id="newSeriesName" name="newSeriesName" placeholder="새 시리즈 명">
+        </div>
+
         <label for="published">임시글 설정:</label>
         <div class="toggle-switch">
             <input type="checkbox" id="published" name="published">
@@ -95,5 +107,14 @@
             }
         });
     });
+
+    function checkNewSeriesOption(select) {
+        var container = document.getElementById('newSeriesContainer');
+        if (select.value === 'new') {
+            container.style.display = 'block';
+        } else {
+            container.style.display = 'none';
+        }
+    }
 </script>
 </html>

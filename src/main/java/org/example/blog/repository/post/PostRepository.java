@@ -12,7 +12,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
     Post findByPostId(Long postId);
 
-    List<Post> findAllByOrderByPostIdAsc();
+    List<Post> findPostsByPublishedAndStatusOrderByTimeAsc(PublishedType publishedType, boolean status);
 
     List<Post> findAllByPublished(PublishedType published);
 //    List<Post> findAllByPublishedAndStatus(PublishedType published, boolean status);

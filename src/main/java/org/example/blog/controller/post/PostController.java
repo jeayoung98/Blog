@@ -9,6 +9,7 @@ import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
 import org.example.blog.domain.post.Post;
 import org.example.blog.domain.post.PublishedType;
+import org.example.blog.domain.post.Series;
 import org.example.blog.domain.user.History;
 import org.example.blog.domain.user.User;
 import org.example.blog.jwt.jwtUtil.JwtTokenizer;
@@ -16,6 +17,7 @@ import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.post.FileStorageService;
 import org.example.blog.service.post.LikeService;
 import org.example.blog.service.post.PostService;
+import org.example.blog.service.post.postInterface.SeriesInterface;
 import org.example.blog.service.user.HistoryService;
 import org.example.blog.service.user.UserService;
 
@@ -25,8 +27,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Controller
@@ -40,16 +44,24 @@ public class PostController {
     private final JwtTokenizer jwtTokenizer;
     private final LikeService likeService;
     private final HistoryService historyService;
+    private final SeriesInterface seriesService;
 
     @GetMapping("/new")
     public String newPostForm(HttpServletRequest request, RedirectAttributes redirectAttributes,Model model) {
         User user = userService.findUserById(userService.getUserIdFromCookie(request));
+        Blog blog = blogService.findBlogByUserId(user.getId());
         model.addAttribute("user", user);
+        Set<Series> allSeries = new HashSet<>();
+        if (seriesService.getSeriesByBlogId(blog.getBlogId()) != null) {
+            allSeries = seriesService.getSeriesByBlogId(blog.getBlogId());
+        }
+
+        model.addAttribute("allSeries", allSeries);
         if (user == null) {
             redirectAttributes.addFlashAttribute("error", "로그인이 필요합니다.");
             return "redirect:/login";
         }
-        Blog blog = blogService.findBlogByUserId(user.getId());
+
         if (blog == null) {
             redirectAttributes.addFlashAttribute("error", "블로그를 찾을수 없습니다.");
             return "redirect:/login";
@@ -64,7 +76,9 @@ public class PostController {
                              @RequestParam("tags") String tags,
                              @RequestParam("image") MultipartFile[] images,
                              @RequestParam(value = "published", required = false) String published,
-                             @RequestParam(value = "status",required = false) String status,
+                             @RequestParam(value = "status", required = false) String status,
+                             @RequestParam(name = "series", required = false) String series,
+                             @RequestParam(value = "newSeriesName", required = false) String newSeriesName,
                              HttpServletRequest request,
                              RedirectAttributes redirectAttributes) {
 
@@ -87,7 +101,7 @@ public class PostController {
             PublishedType draft = published != null ? PublishedType.DRAFT : PublishedType.PUBLISHED;
             boolean isPublic = status != null;
             // 게시물 생성 처리
-            postService.createPost(blog, title, content, tags, imagePaths,draft,isPublic);
+            postService.createPost(blog, title, content, tags, imagePaths, draft, isPublic, series, newSeriesName);
 
             return "redirect:/blogs/" + blogService.findBlogByUserId(user.getId()).getBlogId();
         } catch (Exception e) {
@@ -153,12 +167,14 @@ public class PostController {
     @GetMapping("/update/{id}")
     public String showEditPostForm(@PathVariable("id") Long postId, Model model,HttpServletRequest request) {
         Post post = postService.getPostById(postId);
-        if (userService.getUserIdFromCookie(request) != post.getBlog().getUser().getId()) {
+        if (!Objects.equals(userService.getUserIdFromCookie(request), post.getBlog().getUser().getId())) {
             model.addAttribute("error", "권한이 없습니다");
             return "/view/error";
         }
         model.addAttribute("post", post);
         model.addAttribute("user",userService.findUserById(userService.getUserIdFromCookie(request)));
+        Set<Series> allSeries = seriesService.getSeriesByBlogId(post.getBlog().getBlogId());
+        model.addAttribute("allSeries", allSeries);
         return "/view/post/editPost";
     }
 
@@ -170,6 +186,8 @@ public class PostController {
                            @RequestParam("image") MultipartFile[] images,
                            @RequestParam(value = "published", required = false) String published,
                            @RequestParam(value = "status", required = false) String status,
+                           @RequestParam("series") String series,
+                           @RequestParam(value = "newSeriesName", required = false) String newSeriesName,
                            HttpServletRequest request,
                            RedirectAttributes redirectAttributes) {
         try {
@@ -181,7 +199,7 @@ public class PostController {
             PublishedType draft = published.equals("on,true") ? PublishedType.DRAFT : PublishedType.PUBLISHED;
             boolean isPublic = !status.equals("false");
             // 게시물 생성 처리
-            postService.updatePost(postId, title, content, tags, imagePaths, draft, isPublic);
+            postService.updatePost(postId, title, content, tags, imagePaths, draft, isPublic,series,newSeriesName);
 
             return "redirect:/blogs/" + blogService.findBlogByUserId(user.getId()).getBlogId();
         } catch (Exception e) {

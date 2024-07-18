@@ -33,6 +33,8 @@ public class BlogController {
         Long id = userService.getUserIdFromCookie(request);
         User user = userService.findUserById(id);
 
+        List<Post> allPosts = postService.getAllPosts(PublishedType.PUBLISHED, true);
+        model.addAttribute("allPosts", allPosts);
         model.addAttribute("posts", posts);
         model.addAttribute("user", user);
         model.addAttribute("blog", blogService.findBlogByUserId(id));

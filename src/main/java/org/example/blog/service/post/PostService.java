@@ -3,10 +3,7 @@ package org.example.blog.service.post;
 import lombok.RequiredArgsConstructor;
 import org.example.blog.domain.blog.Blog;
 import org.example.blog.domain.Image;
-import org.example.blog.domain.post.Like;
-import org.example.blog.domain.post.Post;
-import org.example.blog.domain.post.PublishedType;
-import org.example.blog.domain.post.Tag;
+import org.example.blog.domain.post.*;
 import org.example.blog.domain.user.History;
 import org.example.blog.domain.user.User;
 import org.example.blog.repository.blog.BlogRepository;
@@ -17,6 +14,7 @@ import org.example.blog.service.blog.BlogService;
 import org.example.blog.service.blog.blogInterface.BlogInterface;
 import org.example.blog.service.post.postInterface.LikeInterface;
 import org.example.blog.service.post.postInterface.PostInterface;
+import org.example.blog.service.post.postInterface.SeriesInterface;
 import org.example.blog.service.post.postInterface.TagInterface;
 import org.example.blog.service.user.userInterface.HistoryInterface;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +32,12 @@ public class PostService implements PostInterface {
     private final BlogInterface blogService;
     private final TagInterface tagService;
     private final HistoryInterface historyService;
-
+    private final SeriesInterface seriesService;
 
 
     @Transactional
-    public void createPost(Blog blog, String title, String content, String tags, List<Image> images, PublishedType published,boolean status) {
+    public void createPost(Blog blog, String title, String content, String tags,
+                           List<Image> images, PublishedType published,boolean status,String series,String newSeries) {
         Post post = new Post();
         post.setBlog(blog);
         post.setTitle(title);
@@ -51,6 +50,21 @@ public class PostService implements PostInterface {
             image.setPost(post);
         }
         post.setImages(images);
+
+
+        if (newSeries != null && !newSeries.isEmpty()) {
+            Series seriesNew = seriesService.createSeries(blog, post, newSeries);
+            post.setSeries(seriesNew);
+        } else {
+            if (series.isEmpty() || series == null) {
+                Series noTitleSeries = seriesService.createSeries(blog, post, null);
+                post.setSeries(noTitleSeries);
+            } else {
+                Series existingSeries = seriesService.createSeries(blog, post, seriesService.getSeriesById(Long.parseLong(series)).getTitle());
+                post.setSeries(existingSeries);
+            }
+        }
+
         postRepository.save(post);
     }
 
@@ -59,8 +73,8 @@ public class PostService implements PostInterface {
         postRepository.save(post);
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAllByOrderByPostIdAsc();
+    public List<Post> getAllPosts(PublishedType publishedType,boolean status) {
+        return postRepository.findPostsByPublishedAndStatusOrderByTimeAsc(publishedType, status);
     }
 
     @Transactional
@@ -117,7 +131,8 @@ public class PostService implements PostInterface {
 
 
 
-    public void updatePost(Long postId,String title, String content, String tags, List<Image> images, PublishedType published,boolean status) {
+    public void updatePost(Long postId,String title, String content, String tags, List<Image> images,
+                           PublishedType published,boolean status,String series,String newSeries) {
         Post post = getPostById(postId);
         post.setTitle(title);
         post.setContent(content);
@@ -125,6 +140,19 @@ public class PostService implements PostInterface {
         post.setPublished(published);
         post.setStatus(status);
         post.setImages(images);
+
+        if (newSeries != null && !newSeries.isEmpty()) {
+            Series seriesNew = seriesService.updateSeries(post.getBlog(), post, newSeries);
+            post.setSeries(seriesNew);
+        } else {
+            if (series.isEmpty() || series == null) {
+                Series noTitleSeries = seriesService.updateSeries(post.getBlog(), post, null);
+                post.setSeries(noTitleSeries);
+            } else {
+                Series existingSeries = seriesService.updateSeries(post.getBlog(), post, seriesService.getSeriesById(Long.parseLong(series)).getTitle());
+                post.setSeries(existingSeries);
+            }
+        }
         postRepository.save(post);
     }
 

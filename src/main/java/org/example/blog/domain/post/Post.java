@@ -13,7 +13,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "Posts")
-@Getter @Setter
+@Getter
+@Setter
 @NoArgsConstructor
 public class Post {
     @Id
@@ -59,7 +60,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<History> histories;
 
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private Series series;
 }

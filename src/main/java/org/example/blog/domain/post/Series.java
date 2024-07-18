@@ -7,17 +7,21 @@ import org.example.blog.domain.blog.Blog;
 
 @Entity
 @Table(name = "Series")
-@Getter @Setter
+@Getter
+@Setter
 public class Series {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "series_id")
     private Long seriesId;
 
-    @Column(nullable = false)
     private String title;
 
     @ManyToOne
     @JoinColumn(name = "blog_id", nullable = false)
     private Blog blog;
+
+    @OneToOne
+    @JoinColumn(name = "post_id", nullable = true)
+    private Post post;
 }

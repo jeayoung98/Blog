@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.blog.domain.post.Post;
+import org.example.blog.domain.post.Series;
 import org.example.blog.domain.user.User;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Blogs")
@@ -26,6 +28,9 @@ public class Blog {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
+
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
+    private Set<Series> series;
 }
