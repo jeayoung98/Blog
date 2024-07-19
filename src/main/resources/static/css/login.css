@@ -66,3 +66,38 @@ input[type="submit"]:hover {
     margin-top: 10px;
     background-color: #45a049;
 }
+
+.signup-link-container {
+    text-align: center;
+    margin-top: 10px; /* 로그인 폼과의 간격 */
+    margin-right: 295px;
+}
+
+.signup-link {
+    display: inline-block;
+    background-color: #645fa6; /* 링크 배경색 */
+    color: white; /* 텍스트 색상 */
+    padding: 10px 20px; /* 패딩 */
+    text-decoration: none; /* 밑줄 제거 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    transition: background-color 0.3s, color 0.3s; /* 색상 변화 애니메이션 */
+}
+
+.signup-link:hover {
+    background-color: #564b8e; /* 호버 시 배경색 변경 */
+    color: #fff; /* 호버 시 텍스트 색상 변경 */
+}
+
+.login-button {
+    background-color: #007BFF; /* 밝은 파란색 */
+    color: white; /* 텍스트 색상 흰색 */
+    padding: 10px 15px; /* 패딩 설정 */
+    border: none; /* 테두리 제거 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    cursor: pointer; /* 마우스 오버 시 커서 변경 */
+    transition: background-color 0.3s; /* 배경색 변경 애니메이션 */
+}
+
+.login-button:hover {
+    background-color: #0056b3; /* 호버 시 좀 더 어두운 파란색으로 변경 */
+}

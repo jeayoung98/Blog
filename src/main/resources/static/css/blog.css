@@ -184,7 +184,7 @@ a:hover {
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
-    bottom: -230px; /* 드롭다운을 버튼의 위쪽으로 이동 */
+    bottom: -180px; /* 드롭다운을 버튼의 위쪽으로 이동 */
     margin-right: 1px;
     border-radius: 5px;
     overflow: hidden;

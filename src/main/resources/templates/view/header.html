@@ -11,22 +11,14 @@
         <h1><a href="/blogs" style="color: white; text-decoration: none;">Blog</a></h1>
     </div>
     <div class="header-right">
-<!--        <form action="/search" method="get">-->
-<!--            <input type="text" name="query" placeholder="검색..." required>-->
-<!--            <select name="type">-->
-<!--                <option value="title">제목</option>-->
-<!--                <option value="content">내용</option>-->
-<!--                <option value="username">사용자 이름</option>-->
-<!--            </select>-->
-<!--            <button type="submit">검색</button>-->
-<!--        </form>-->
+
         <h1><a th:if="${user == null}" href="/loginform" style="color: white; text-decoration: none;" class="must-be-login">로그인</a></h1>
         <img th:if="${user !=null and user.profileImage != '/upload/null'}" th:src="@{|${user.profileImage}|}" alt="이미지 로딩중" class="profile-pic">
         <img th:if="${user !=null && user.profileImage == '/upload/null'}" src="/images/hi.png" alt="이미지 없음" class="profile-pic">
         <div class="dropdown-content" id="dropdown-content">
-            <a th:href="@{/blogs/{id} (id=${blog != null ? user.blog.blogId : 0})}">내 블로그</a>
+            <a th:href="@{/blogs/{id} (id=${user != null ? user.blog.blogId : 0})}">내 블로그</a>
             <a href="/posts/new">새 글 작성</a>
-            <a th:href="@{/blogs/draft/{id} (id=${blog != null ? user.blog.blogId : 0})}">임시글 목록</a>
+            <a th:href="@{/blogs/draft/{id} (id=${user != null ? user.blog.blogId : 0})}">임시글 목록</a>
             <a th:href="@{/history/like/{id} (id=${user != null ? user.id : 0})}">활동 기록</a>
             <a href="/mypage">마이페이지</a>
             <a href="/logout">로그아웃</a>

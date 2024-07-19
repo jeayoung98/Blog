@@ -12,11 +12,26 @@
 
 <div class="blog-container">
     <header>
-        <h1 th:text="${blog.title}+' 시리즈'" class="blog-title">블로그 제목</h1>
+        <div class="profile-section">
+            <div class="profile-info">
+                <img th:if="${blogOwner.profileImage != '/upload/null'}" th:src="@{|${blogOwner.profileImage}|}" alt="프로필 사진" class="profile-pic">
+                <img th:if="${blogOwner.profileImage == '/upload/null'}" src="/images/hi.png" alt="이미지 없음" class="profile-pic">
+                <div class="profile-details">
+                    <h2 th:text="${blogOwner.name}">사용자 이름</h2>
+                    <p>
+                        <span th:text="'팔로워 ' + ${following.size()}">팔로워 수</span> |
+                        <span th:text="'팔로잉 ' + ${follower.size()}">팔로잉 수</span>
+                    </p>
+                    <button th:if="${currentUserId != 0 && !isFollowing && blogOwner.id != currentUserId}" th:attr="data-action='follow', data-user-id=${blogOwner.id}" class="follow-btn">팔로우</button>
+                    <button th:if="${isFollowing && blogOwner.id != currentUserId}" th:attr="data-action='unfollow', data-user-id=${blogOwner.id}" class="follow-btn">언팔로우</button>
+                </div>
+            </div>
+        </div>
+        <h1 th:text="${seriesTitle}" class="blog-title">블로그 제목</h1>
         <div class="dropdown">
             <button class="toggle-button">보기 옵션</button>
             <div class="dropdown-content1" style="display:none;">
-                <a th:href="@{/blogs/tags/{id} (id = ${blogOwner.blog.blogId})}">태그별</a>
+<!--                <a th:href="@{/blogs/tags/{id} (id = ${blogOwner.blog.blogId})}">태그별</a>-->
                 <a th:href="@{/blogs/series/{id}  (id = ${blogOwner.blog.blogId})}">시리즈별</a>
                 <a th:href="@{/blogs/sort/date/{id} (id = ${blogOwner.blog.blogId})}">최신순</a>
                 <a th:href="@{/blogs/sort/views/{id} (id = ${blogOwner.blog.blogId})}">조회순</a>
@@ -24,23 +39,6 @@
             </div>
         </div>
     </header>
-
-    <!-- 사용자 프로필 섹션 추가 -->
-    <div class="profile-section">
-        <div class="profile-info">
-            <img th:if="${blogOwner.profileImage != '/upload/null'}" th:src="@{|${blogOwner.profileImage}|}" alt="프로필 사진" class="profile-pic">
-            <img th:if="${blogOwner.profileImage == '/upload/null'}" src="/images/hi.png" alt="이미지 없음" class="profile-pic">
-            <div class="profile-details">
-                <h2 th:text="${blogOwner.name}">사용자 이름</h2>
-                <p>
-                    <span th:text="'팔로워 ' + ${following.size()}">팔로워 수</span> |
-                    <span th:text="'팔로잉 ' + ${follower.size()}">팔로잉 수</span>
-                </p>
-                <button th:if="${!isFollowing && blog.user.id != user.id}" th:attr="data-action='follow', data-user-id=${blogOwner.id}" class="follow-btn">팔로우</button>
-                <button th:if="${isFollowing && blog.user.id != user.id}" th:attr="data-action='unfollow', data-user-id=${blogOwner.id}" class="follow-btn">언팔로우</button>
-            </div>
-        </div>
-    </div>
 
     <main>
         <div class="post-list">

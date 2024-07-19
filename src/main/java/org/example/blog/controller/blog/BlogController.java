@@ -78,14 +78,16 @@ public class BlogController {
                               HttpServletRequest request) {
         Long currentUserId = userService.getUserIdFromCookie(request); // 쿠키
         Long blogId = null;
-        System.out.println(id);
-        Long userId = userService.findUserById(blogService.getBlogById(id).getUser().getId()).getId();
+
+        Long userId = blogService.getBlogById(id).getUser().getId();
         User user = userService.findUserById(userId);
         User currentUser = userService.findUserById(currentUserId);
         Set<User> following = followService.getFollowsByFollower(user);
         Set<User> follower = followService.getFollowsByFollowing(user);
         boolean isFollowing = followService.isFollowing(following, currentUser);
 
+//        System.out.println(currentUser.getId());
+        System.out.println(user.getId());
         model.addAttribute("follower", follower);
         model.addAttribute("following", following);
         model.addAttribute("isFollowing", isFollowing);
@@ -95,8 +97,9 @@ public class BlogController {
         blogId = blogService.findBlogByUserId(userId).getBlogId();
 
 
-//        Blog blog = blogService.findBlogByUserId(userId);
+
         if (user.getBlog() != null) {
+//            Blog blog = blogService.findBlogByUserId(userId);
             blogService.sortedPosts(blogId);
             model.addAttribute("posts", postService.getPostsByBlogOrderByTime(user.getBlog()));
 //            model.addAttribute("blog", blog);
@@ -110,6 +113,8 @@ public class BlogController {
     @GetMapping("/draft/{id}")
     public String showDraftPosts(@PathVariable("id") Long blogId, Model model, HttpServletRequest request) {
         User user = userService.findUserById(userService.getUserIdFromCookie(request));
+        System.out.println("임시글 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+        System.out.println(blogId);
         model.addAttribute("user", user);
         model.addAttribute("blog", blogService.getBlogById(blogId));
         model.addAttribute("posts", postService.getDraftPostsByBlog(blogId));
@@ -121,7 +126,7 @@ public class BlogController {
         Blog blog = blogService.getBlogById(blogId);
         List<Post> posts = postService.getPostsByBlogOrderByTime(blog);
         Long userId = userService.getUserIdFromCookie(request);
-        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
+        User blogOwner = blogService.getBlogById(blogId).getUser();
         Set<User> following = followService.getFollowsByFollower(blogOwner);
         Set<User> follower = followService.getFollowsByFollowing(blogOwner);
         User user = userService.findUserById(userId);
@@ -142,7 +147,7 @@ public class BlogController {
     @GetMapping("/sort/likes/{id}")
     public String sortedByLikes(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
         Long userId = userService.getUserIdFromCookie(request);
-        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
+        User blogOwner = blogService.getBlogById(blogId).getUser();
         Blog blog = blogService.getBlogById(blogId);
         List<Post> posts = postService.getPostsOrderByLikes(blog);
         Set<User> following = followService.getFollowsByFollower(blogOwner);
@@ -164,7 +169,7 @@ public class BlogController {
     @GetMapping("/sort/views/{id}")
     public String sortedByViews(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
         Long userId = userService.getUserIdFromCookie(request);
-        User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
+        User blogOwner = blogService.getBlogById(blogId).getUser();
         Blog blog = blogService.getBlogById(blogId);
         List<Post> posts = postService.getPostsOrderByView(blog);
         Set<User> following = followService.getFollowsByFollower(blogOwner);
@@ -196,6 +201,7 @@ public class BlogController {
         model.addAttribute("user", user);
         model.addAttribute("allPosts", posts);
         model.addAttribute("blog", blog);
+
 
         return "/view/blog/mainPage";
     }
@@ -281,13 +287,13 @@ public class BlogController {
         Set<Series> series = seriesService.getSeriesByBlogId(blogId);
         Set<Series> selectedSeries = new HashSet<>();
 
+
         for (Series series1 : series) {
             if (series1.getTitle().equals(seriesTitle)) {
                 selectedSeries.add(series1);
             }
         }
-        System.out.println(selectedSeries.size());
-        selectedSeries.forEach(a -> System.out.println(a.getTitle()));
+
 
         model.addAttribute("selectedSeries", selectedSeries);
         model.addAttribute("user", user);
@@ -296,6 +302,7 @@ public class BlogController {
         model.addAttribute("follower", follower);
         model.addAttribute("following", following);
         model.addAttribute("isFollowing", isFollowing);
+        model.addAttribute("seriesTitle", seriesTitle);
         return "/view/blog/selectedSeries";
     }
 

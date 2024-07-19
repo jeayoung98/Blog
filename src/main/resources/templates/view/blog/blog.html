@@ -24,7 +24,7 @@
                         <span th:text="'팔로워 ' + ${following.size()}">팔로워 수</span> |
                         <span th:text="'팔로잉 ' + ${follower.size()}">팔로잉 수</span>
                     </p>
-                    <button th:if="${currentUserId != 0 &&!isFollowing && blogOwner.id != currentUserId}" th:attr="data-action='follow', data-user-id=${blogOwner.id}" class="follow-btn">팔로우</button>
+                    <button th:if="${currentUserId != 0 && !isFollowing && blogOwner.id != currentUserId}" th:attr="data-action='follow', data-user-id=${blogOwner.id}" class="follow-btn">팔로우</button>
                     <button th:if="${isFollowing && blogOwner.id != currentUserId}" th:attr="data-action='unfollow', data-user-id=${blogOwner.id}" class="follow-btn">언팔로우</button>
                 </div>
             </div>
