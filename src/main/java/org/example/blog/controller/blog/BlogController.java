@@ -242,6 +242,7 @@ public class BlogController {
         for (Series series1 : series) {
             titles.add(series1.getTitle());
         }
+
         Long userId = userService.getUserIdFromCookie(request);
         User user = userService.findUserById(userId);
         User blogOwner = blogService.getBlogById(blogId).getUser();
@@ -273,10 +274,11 @@ public class BlogController {
 
     @GetMapping("/series/{blogId}/{seriesTitle}")
     public String showSeries(@PathVariable("seriesTitle") String seriesTitle, // 여기서 인코딩해보기
-                             @PathVariable("blogId")Long blogId,
+                             @PathVariable("blogId") String blogIdStr,
                              HttpServletRequest request,
                              Model model) {
         Long userId = userService.getUserIdFromCookie(request);
+        Long blogId = Long.parseLong(blogIdStr);
         User user = userService.findUserById(userId);
         User blogOwner = blogService.getBlogById(blogId).getUser();
         Set<User> following = followService.getFollowsByFollower(blogOwner);
@@ -285,11 +287,15 @@ public class BlogController {
         Blog blog = blogService.findBlogByUserId(userId);
         Set<Series> series = seriesService.getSeriesByBlogId(blogId);
         Set<Series> selectedSeries = new HashSet<>();
+
         for (Series series1 : series) {
             if (series1.getTitle().equals(seriesTitle)) {
                 selectedSeries.add(series1);
             }
         }
+        System.out.println(selectedSeries.size());
+        selectedSeries.forEach(a -> System.out.println(a.getTitle()));
+
         model.addAttribute("selectedSeries", selectedSeries);
         model.addAttribute("user", user);
         model.addAttribute("blog", blog);

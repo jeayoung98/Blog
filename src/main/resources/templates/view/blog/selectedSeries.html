@@ -43,7 +43,7 @@
     </div>
 
     <main>
-        <div th:unless="${!selectedSeries.isEmpty()}" class="post-list">
+        <div class="post-list">
             <div th:each="series : ${selectedSeries}" class="post-preview">
                 <a th:href="@{/posts/{postId} (postId=${series.post.postId})}">
                     <div class="post-image">
