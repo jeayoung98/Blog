@@ -104,23 +104,26 @@ public class PostService implements PostInterface {
     public void postView(Long postId,Long userId) {
         if (getBlogByPostId(postId).getUser().getId() != userId) {
             List<History> currentUserHistories = historyService.getHistoryByUserId(userId);
-            if (currentUserHistories.size() == 0) {
-                Post post = getPostById(postId);
-                post.setView(post.getView() + 1);
-                savePost(post);
-            } else {
-                boolean flag = false;
-                for (History currentHistory : currentUserHistories) {
-                    if (Objects.equals(currentHistory.getPost().getPostId(), postId) && Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
-                        flag = true;
-                    }
-                }
-                if (!flag) {
-                    Post post=getPostById(postId);
+            if (userId != 0L) {
+                if (currentUserHistories.size() == 0) {
+                    Post post = getPostById(postId);
                     post.setView(post.getView() + 1);
                     savePost(post);
+                } else {
+                    boolean flag = false;
+                    for (History currentHistory : currentUserHistories) {
+                        if (Objects.equals(currentHistory.getPost().getPostId(), postId) && Objects.equals(currentHistory.getViewDay(), LocalDate.now())) {
+                            flag = true;
+                        }
+                    }
+                    if (!flag) {
+                        Post post=getPostById(postId);
+                        post.setView(post.getView() + 1);
+                        savePost(post);
+                    }
                 }
             }
+
 
         }
     }
@@ -166,7 +169,7 @@ public class PostService implements PostInterface {
         return posts;
     }
 
-    public List<Post> getPostsOrderByTime(Blog blog) {
+    public List<Post> getPostsByBlogOrderByTime(Blog blog) {
         List<Post> posts = postRepository.findPostsByBlogAndPublished(blog,PublishedType.PUBLISHED);
         Collections.sort(posts, (post1, post2) -> Long.compare(post2.getPostId(), post1.getPostId()));
         return posts;

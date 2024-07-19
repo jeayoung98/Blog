@@ -24,13 +24,13 @@
                         <span th:text="'팔로워 ' + ${following.size()}">팔로워 수</span> |
                         <span th:text="'팔로잉 ' + ${follower.size()}">팔로잉 수</span>
                     </p>
-                    <button th:if="${!isFollowing && blog.user.id != user.id}" th:attr="data-action='follow', data-user-id=${blogOwner.id}" class="follow-btn">팔로우</button>
-                    <button th:if="${isFollowing && blog.user.id != user.id}" th:attr="data-action='unfollow', data-user-id=${blogOwner.id}" class="follow-btn">언팔로우</button>
+                    <button th:if="${currentUserId != 0 &&!isFollowing && blogOwner.id != currentUserId}" th:attr="data-action='follow', data-user-id=${blogOwner.id}" class="follow-btn">팔로우</button>
+                    <button th:if="${isFollowing && blogOwner.id != currentUserId}" th:attr="data-action='unfollow', data-user-id=${blogOwner.id}" class="follow-btn">언팔로우</button>
                 </div>
             </div>
         </div>
 
-        <h1 th:text="${blog.title}" class="blog-title">블로그 제목</h1>
+        <h1 th:text="${blogOwner.blog.title}" class="blog-title">블로그 제목</h1>
 
         <div class="dropdown">
             <button class="toggle-button">보기 옵션</button>

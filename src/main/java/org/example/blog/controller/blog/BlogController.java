@@ -39,7 +39,7 @@ public class BlogController {
         model.addAttribute("allPosts", allPosts);
         model.addAttribute("posts", posts);
         model.addAttribute("user", user);
-        model.addAttribute("blog", blogService.findBlogByUserId(id));
+//        model.addAttribute("blog", blogService.findBlogByUserId(id));
         return "/view/blog/mainPage";
     }
 
@@ -75,12 +75,10 @@ public class BlogController {
     @GetMapping("/{id}")
     public String getBlogById(@PathVariable("id") Long id,
                               Model model,
-                              HttpServletRequest request,
-                              RedirectAttributes redirectAttributes) {
-        System.out.println("블로그 페이지 요청 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ");
+                              HttpServletRequest request) {
         Long currentUserId = userService.getUserIdFromCookie(request); // 쿠키
         Long blogId = null;
-
+        System.out.println(id);
         Long userId = userService.findUserById(blogService.getBlogById(id).getUser().getId()).getId();
         User user = userService.findUserById(userId);
         User currentUser = userService.findUserById(currentUserId);
@@ -93,20 +91,15 @@ public class BlogController {
         model.addAttribute("isFollowing", isFollowing);
         model.addAttribute("user", currentUser);
         model.addAttribute("blogOwner", user);
-        if (userId != null) {
-            try {
-                blogId = blogService.findBlogByUserId(userId).getBlogId();
+        model.addAttribute("currentUserId", currentUserId);
+        blogId = blogService.findBlogByUserId(userId).getBlogId();
 
-            } catch (NullPointerException e) {
-                redirectAttributes.addFlashAttribute("error", "권한이 없습니다.");
-            }
-        }
 
-        Blog blog = blogService.findBlogByUserId(userId);
-        if (blog != null) {
+//        Blog blog = blogService.findBlogByUserId(userId);
+        if (user.getBlog() != null) {
             blogService.sortedPosts(blogId);
-            model.addAttribute("posts", postService.getPostsOrderByTime(blog));
-            model.addAttribute("blog", blog);
+            model.addAttribute("posts", postService.getPostsByBlogOrderByTime(user.getBlog()));
+//            model.addAttribute("blog", blog);
             return "/view/blog/blog";
         } else {
             model.addAttribute("error", "블로그를 찾지 못했습니다.");
@@ -126,7 +119,7 @@ public class BlogController {
     @GetMapping("/sort/date/{id}")
     public String recentPosts(@PathVariable(name = "id") Long blogId, Model model, HttpServletRequest request) {
         Blog blog = blogService.getBlogById(blogId);
-        List<Post> posts = postService.getPostsOrderByTime(blog);
+        List<Post> posts = postService.getPostsByBlogOrderByTime(blog);
         Long userId = userService.getUserIdFromCookie(request);
         User blogOwner = userService.findUserById(blogService.getBlogById(blogId).getUser().getId());
         Set<User> following = followService.getFollowsByFollower(blogOwner);

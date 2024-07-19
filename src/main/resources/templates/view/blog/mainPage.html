@@ -18,7 +18,7 @@
             <div class="dropdown-content2" style="display:none;">
                 <a href="/blogs/sort/date">최신순</a>
                 <a href="/blogs/sort/views">조회순</a>
-                <a href="/blogs/sort/likes">좋아순</a>
+                <a href="/blogs/sort/likes">좋아요순</a>
             </div>
         </div>
     </header>
@@ -84,7 +84,7 @@
 
     // 외부 클릭 감지하여 드롭다운 닫기
     window.addEventListener('click', function() {
-        var dropdowns = document.querySelectorAll('.dropdown-content1');
+        var dropdowns = document.querySelectorAll('.dropdown-content2');
         for (var i = 0; i < dropdowns.length; i++) {
             var openDropdown = dropdowns[i];
             if (openDropdown.style.display === 'block') {

@@ -1,6 +1,7 @@
 package org.example.blog.domain.user;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.blog.domain.blog.Blog;
@@ -65,6 +66,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<History> histories;
+
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL,fetch = FetchType.LAZY) // 모든 CascadeType 적용
+    private Set<Follow> follower;
+
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL,fetch = FetchType.LAZY) // 모든 CascadeType 적용
+    private Set<Follow> following;
 
 
 }

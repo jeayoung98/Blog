@@ -22,16 +22,19 @@ public class HistoryService implements HistoryInterface {
 
     @Transactional
     public void saveHistory(History history, User user, Post post) {
-        if (user.getId() == post.getBlog().getUser().getId() || user.getId() == 0L) {
-            return;
+        if (user != null) {
+            if (user.getId() == post.getBlog().getUser().getId() || user.getId() == 0L) {
+                return;
+            }
+            history.setPost(post);
+            history.setUser(user);
+            History historyByUserIdAndPostPostId = historyRepository.findHistoryByUserIdAndPostPostId(user.getId(), post.getPostId());
+            if (historyByUserIdAndPostPostId != null) {
+                deleteHistory(historyByUserIdAndPostPostId);
+                historyRepository.save(history);
+            } else historyRepository.save(history);
         }
-        history.setPost(post);
-        history.setUser(user);
-        History historyByUserIdAndPostPostId = historyRepository.findHistoryByUserIdAndPostPostId(user.getId(), post.getPostId());
-        if (historyByUserIdAndPostPostId != null) {
-            deleteHistory(historyByUserIdAndPostPostId);
-            historyRepository.save(history);
-        } else historyRepository.save(history);
+
     }
 
     @Transactional
