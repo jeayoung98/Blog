@@ -35,7 +35,7 @@
         <div class="dropdown">
             <button class="toggle-button">보기 옵션</button>
             <div class="dropdown-content1" style="display:none;">
-                <a th:href="@{/blogs/tags/{id} (id = ${blogOwner.blog.blogId})}">태그별</a>
+<!--                <a th:href="@{/blogs/tags/{id} (id = ${blogOwner.blog.blogId})}">태그별</a>-->
                 <a th:href="@{/blogs/series/{id}  (id = ${blogOwner.blog.blogId})}">시리즈별</a>
                 <a th:href="@{/blogs/sort/date/{id} (id = ${blogOwner.blog.blogId})}">최신순</a>
                 <a th:href="@{/blogs/sort/views/{id} (id = ${blogOwner.blog.blogId})}">조회순</a>
